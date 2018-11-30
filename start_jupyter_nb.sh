@@ -3,15 +3,15 @@
 # script to start a jupyter notebook from a local computer on Euler
 
 if [ "$#" -ne 1 ]; then
-        echo -e "Usage:\tstart_jupyter_nb.sh USERNAME\n"
+        echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME\n"
         echo -e "Arguments:\n"
-        echo -e "USERNAME\t\tUsername for which the notebook should be started\n"
+        echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started\n"
         exit
 fi
 
-# get username from command line argument
+# get NETHZ username from command line argument
 USERNAME=$1
-echo -e "Username: $USERNAME"
+echo -e "NETHZ username: $USERNAME"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for leftover files from previous sessions"
