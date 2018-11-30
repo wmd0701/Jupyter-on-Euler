@@ -63,10 +63,10 @@ nburl=http://localhost:$PORTN/?token=$jnbtoken
 echo -e "Starting browser and connecting it to jupyter notebook"
 echo -e "url "$nburl
 
-if [[ "$OS_TYPE" == "linux-gnu" ]]; then
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	xdg-open $nburl
-elif [[ "$OS_TYPE" == "darwin" ]]; then
+elif [[ "$OSTYPE" == "darwin"* ]]; then
 	open $nburl
 else
-	echo "Open the url your browser."
+	echo "Open the url in your browser."
 fi
