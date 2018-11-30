@@ -29,3 +29,4 @@ apt-get install xdg-utils
 ## Contributions
 * Urban Borstnik
 * Steven Armstrong
+* Swen Vermeul
