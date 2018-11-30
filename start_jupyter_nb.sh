@@ -59,13 +59,14 @@ echo -e "Setting up SSH tunnel for connecting the browser to the jupyter noteboo
 ssh $USERNAME@euler.ethz.ch -L $PORTN:$remoteip:$remoteport -N &
 
 sleep 5
-
+nburl=http://localhost:$PORTN/?token=$jnbtoken
 echo -e "Starting browser and connecting it to jupyter notebook"
+echo -e "url "$nburl
 
-if [[ "$OS_TYPE" == "linux-gnu" ]]; then
-	xdg-open http://localhost:$PORTN/?token=$jnbtoken
-elif [[ "$OS_TYPE" == "darwin" ]]; then
-	open http://localhost:$PORTN/?token=$jnbtoken
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+	xdg-open $nburl
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	open $nburl
 else
-	echo "The script only works with Linux or Mac OS X"
+	echo "Open the url in your browser."
 fi
