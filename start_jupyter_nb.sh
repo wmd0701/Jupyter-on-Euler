@@ -2,6 +2,7 @@
 
 # script to start a jupyter notebook from a local computer on Euler
 
+# print usage instruction if number of command line arguments is different from 1
 if [ "$#" -ne 1 ]; then
         echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME\n"
         echo -e "Arguments:\n"
@@ -26,7 +27,8 @@ if [ -f /cluster/home/$USERNAME/jnbip ]; then
 fi 
 ENDSSH
 
-# run the jupyter notebook job on Euler
+# run the jupyter notebook job on Euler and save ip, port and the token
+# in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to Euler to start jupyter notebook in a batch job"
 ssh $USERNAME@euler.ethz.ch bsub -n 1 -W 1:00 <<ENDBSUB
 module load new python/3.6.1
@@ -55,18 +57,24 @@ echo -e "Determining free port on local computer"
 PORTN=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
 echo -e "Local port: $PORTN"
 
+# setup SSH tunnel from local computer to compute node via login node
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
 ssh $USERNAME@euler.ethz.ch -L $PORTN:$remoteip:$remoteport -N &
 
+# SSH tunnel is started in the background, pause 5 seconds to make sure
+# it is established before starting the browser
 sleep 5
+
+# save url in variable
 nburl=http://localhost:$PORTN/?token=$jnbtoken
 echo -e "Starting browser and connecting it to jupyter notebook"
-echo -e "url "$nburl
+echo -e "Connecting to url "$nburl
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	xdg-open $nburl
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	open $nburl
 else
-	echo "Open the url in your browser."
+	echo -e "Your operating system does not allow to start the browser automatically."
+        echo -e "Please open $nburl in your browser."
 fi
