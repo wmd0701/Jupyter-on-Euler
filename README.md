@@ -22,6 +22,21 @@ Ubuntu:
 apt-get install xdg-utils
 ```
 
+## Usage
+
+./start_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE
+
+Arguments:
+
+| NETHZ_USERNAME | NETHZ username for which the notebook should be started  
+| NUM_CORES      | Number of cores to be used on the cluster (maximum: 36)  
+| RUN_TIME       | Run time limit for the jupyter notebook on the cluster (HH:MM)  
+| MEM_PER_CORE   | Memory limit in MB per core  
+
+Example:
+
+./start_jupyter_nb.sh sfux 4 01:20 2048
+
 ## Authors
 * Samuel Fux
 * Andrei Plamada

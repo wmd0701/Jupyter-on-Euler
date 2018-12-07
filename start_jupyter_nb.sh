@@ -8,7 +8,7 @@ function print_usage {
         echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started"
-        echo -e "NUM_CORES\t\tNuber of cores to be used on the cluster (<36)"
+        echo -e "NUM_CORES\t\tNumber of cores to be used on the cluster (<36)"
         echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)"
         echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n"
         echo -e "Example:\n"
