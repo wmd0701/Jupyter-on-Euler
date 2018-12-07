@@ -16,7 +16,7 @@ function print_usage {
 }
 
 # if number of command line arguments is different from 4 or if $1==-h or $1==--help
-if [ "$#" -ne 4 -o "$1" -eq "-h" -o "$1" -eq "--help"]; then
+if [ [ "$#" -ne 4 ] -o [ "$1" -eq "-h" ] -o [ "$1" -eq "--help" ] ]; then
         print_usage
         exit
 fi
