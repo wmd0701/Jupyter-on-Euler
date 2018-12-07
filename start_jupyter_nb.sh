@@ -3,14 +3,19 @@
 # script to start a jupyter notebook from a local computer on Euler
 # Samuel Fux, Dec. 2018 @ETH Zurich
 
-# print usage instruction if number of command line arguments is different from 1
-if [ "$#" -ne 1 ]; then
+# function to print usage instructions
+function print_usage{
         echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started\n"
         echo -e "NUM_CORES\t\tNuber of cores to be used on the cluster (<36)\n"
         echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)\n"
         echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n"
+}
+
+# if number of command line arguments is different from 4 or if $1==-h or $1==--help
+if [ "$#" -ne 4 -o "$1" -eq "-h" -o "$1" -eq "--help"]; then
+        print_usage
         exit
 fi
 
@@ -22,11 +27,13 @@ NUM_CORES=$2
 if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
     then
         echo -e "Incorrect format. Please specify number of cores as an integer and try again"
+        print_usage
         exit
 fi
 # check if NUM_CORES is <= 36
 if [ "37" -gt "$NUM_CORES" ]; then
     echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36"
+    print_usage
     exit
 fi
 echo -e "Jupyter notebook will run on $NUM_CORES cores\n"
@@ -34,6 +41,8 @@ RUN_TIME="$3"
 # check if RUN_TIME is provided in HH:MM format
 if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
     echo -e "Incorrect format. Please specify runtime limit in the format HH:MM and try again"
+    print_usage
+    exit
 else
     echo -e "Run time limit set to $RUN_TIME\n"
 fi
@@ -42,6 +51,7 @@ MEM_PER_CORE=$4
 if ! [[ "$MEM_PER_CORE" =~ ^[0-9]+$ ]]
     then
         echo -e "Memory limit must be an integer, please try again"
+        print_usage
         exit
 fi
 echo -e "Memory per core set to $MEM_PER_CORE MB\n"
