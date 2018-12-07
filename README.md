@@ -37,6 +37,8 @@ Example:
 
 ./start_jupyter_nb.sh sfux 4 01:20 2048
 
+Please note that
+
 ## Authors
 * Samuel Fux
 * Andrei Plamada
