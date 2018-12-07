@@ -28,13 +28,13 @@ NUM_CORES=$2
 # check if NUM_CORES is an integer
 if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
     then
-        echo -e "Incorrect format. Please specify number of cores as an integer and try again"
+        echo -e "Incorrect format. Please specify number of cores as an integer and try again\n"
         print_usage
         exit
 fi
 # check if NUM_CORES is <= 36
 if [ "$NUM_CORES" > 36 ]; then
-    echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36"
+    echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36\n"
     print_usage
     exit
 fi
@@ -42,7 +42,7 @@ echo -e "Jupyter notebook will run on $NUM_CORES cores\n"
 RUN_TIME="$3"
 # check if RUN_TIME is provided in HH:MM format
 if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
-    echo -e "Incorrect format. Please specify runtime limit in the format HH:MM and try again"
+    echo -e "Incorrect format. Please specify runtime limit in the format HH:MM and try again\n"
     print_usage
     exit
 else
@@ -52,7 +52,7 @@ MEM_PER_CORE=$4
 # check if MEM_PER_CORE is an integer
 if ! [[ "$MEM_PER_CORE" =~ ^[0-9]+$ ]]
     then
-        echo -e "Memory limit must be an integer, please try again"
+        echo -e "Memory limit must be an integer, please try again\n"
         print_usage
         exit
 fi
