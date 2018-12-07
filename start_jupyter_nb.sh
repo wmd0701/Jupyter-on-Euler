@@ -4,13 +4,15 @@
 # Samuel Fux, Dec. 2018 @ETH Zurich
 
 # function to print usage instructions
-function print_usage{
+function print_usage {
         echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started\n"
         echo -e "NUM_CORES\t\tNuber of cores to be used on the cluster (<36)\n"
         echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)\n"
-        echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n"
+        echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n\n"
+        echo -e "Example:\n\n"
+        echo -e "./start_jupyter_nb.sh sfux 4 01:20 2048"
 }
 
 # if number of command line arguments is different from 4 or if $1==-h or $1==--help
