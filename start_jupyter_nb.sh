@@ -1,18 +1,50 @@
 #!/bin/bash
 
 # script to start a jupyter notebook from a local computer on Euler
+# Samuel Fux, Dec. 2018 @ETH Zurich
 
 # print usage instruction if number of command line arguments is different from 1
 if [ "$#" -ne 1 ]; then
-        echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME\n"
+        echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started\n"
+        echo -e "NUM_CORES\t\tNuber of cores to be used on the cluster (<36)\n"
+        echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)\n"
+        echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n"
         exit
 fi
 
-# get NETHZ username from command line argument
-USERNAME=$1
-echo -e "NETHZ username: $USERNAME"
+# Parse and check command line arguments (NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
+USERNAME="$1"
+echo -e "NETHZ username: $USERNAME\n"
+NUM_CORES=$2
+# check if NUM_CORES is an integer
+if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
+    then
+        echo -e "Incorrect format. Please specify number of cores as an integer and try again"
+        exit
+fi
+# check if NUM_CORES is <= 36
+if [ "37" -gt "$NUM_CORES" ]; then
+    echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36"
+    exit
+fi
+echo -e "Jupyter notebook will run on $NUM_CORES cores\n"
+RUN_TIME="$3"
+# check if RUN_TIME is provided in HH:MM format
+if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
+    echo -e "Incorrect format. Please specify runtime limit in the format HH:MM and try again"
+else
+    echo -e "Run time limit set to $RUN_TIME\n"
+fi
+MEM_PER_CORE=$4
+# check if MEM_PER_CORE is an integer
+if ! [[ "$MEM_PER_CORE" =~ ^[0-9]+$ ]]
+    then
+        echo -e "Memory limit must be an integer, please try again"
+        exit
+fi
+echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for leftover files from previous sessions"
@@ -30,7 +62,7 @@ ENDSSH
 # run the jupyter notebook job on Euler and save ip, port and the token
 # in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to Euler to start jupyter notebook in a batch job"
-ssh $USERNAME@euler.ethz.ch bsub -n 1 -W 1:00 <<ENDBSUB
+ssh $USERNAME@euler.ethz.ch bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
 module load new python/3.6.1
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
