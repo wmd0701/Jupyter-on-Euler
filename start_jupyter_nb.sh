@@ -22,9 +22,14 @@ if [ "$#" !=  4 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 fi
 
 # Parse and check command line arguments (NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
+
+# no need to do checks on the username. If it is wrong, the SSH commands will not work
 USERNAME="$1"
 echo -e "\nNETHZ username: $USERNAME"
+
+# number of cores to be used
 NUM_CORES=$2
+
 # check if NUM_CORES is an integer
 if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
     then
@@ -32,6 +37,7 @@ if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
         print_usage
         exit
 fi
+
 # check if NUM_CORES is <= 36
 if [ "$NUM_CORES" -gt "36" ]; then
     echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36\n"
@@ -39,7 +45,10 @@ if [ "$NUM_CORES" -gt "36" ]; then
     exit
 fi
 echo -e "Jupyter notebook will run on $NUM_CORES cores"
+
+# run time limit
 RUN_TIME="$3"
+
 # check if RUN_TIME is provided in HH:MM format
 if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
     echo -e "Incorrect format. Please specify runtime limit in the format HH:MM and try again\n"
@@ -48,7 +57,10 @@ if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
 else
     echo -e "Run time limit set to $RUN_TIME"
 fi
+
+# memory per core
 MEM_PER_CORE=$4
+
 # check if MEM_PER_CORE is an integer
 if ! [[ "$MEM_PER_CORE" =~ ^[0-9]+$ ]]
     then
