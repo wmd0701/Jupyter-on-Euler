@@ -36,18 +36,25 @@ After downloading the script from gitlab.ethz.ch, you need to change its permiss
 chmod 755 start_jupyter_nb.sh
 ```
 
+Running the script:
+
+```
 ./start_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE
+```
 
-Arguments:
 
-| NETHZ_USERNAME | NETHZ username for which the notebook should be started  
-| NUM_CORES      | Number of cores to be used on the cluster (maximum: 36)  
-| RUN_TIME       | Run time limit for the jupyter notebook on the cluster (HH:MM)  
-| MEM_PER_CORE   | Memory limit in MB per core  
+| Argument       | Description |
+|----------------|---------------------------------------------------------|
+| NETHZ_USERNAME | NETHZ username for which the notebook should be started | 
+| NUM_CORES      | Number of cores to be used on the cluster (maximum: 36) | 
+| RUN_TIME       | Run time limit for the jupyter notebook on the cluster (HH:MM) |  
+| MEM_PER_CORE   | Memory limit in MB per core |
 
 Example:
 
+```
 ./start_jupyter_nb.sh sfux 4 01:20 2048
+```
 
 Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" button in your Browser. This will stop the batch job running on Euler. Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
 
