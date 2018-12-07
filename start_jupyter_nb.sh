@@ -23,7 +23,7 @@ fi
 
 # Parse and check command line arguments (NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
 USERNAME="$1"
-echo -e "NETHZ username: $USERNAME\n"
+echo -e "\nNETHZ username: $USERNAME"
 NUM_CORES=$2
 # check if NUM_CORES is an integer
 if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
@@ -38,7 +38,7 @@ if [ "$NUM_CORES" -gt "36" ]; then
     print_usage
     exit
 fi
-echo -e "Jupyter notebook will run on $NUM_CORES cores\n"
+echo -e "Jupyter notebook will run on $NUM_CORES cores"
 RUN_TIME="$3"
 # check if RUN_TIME is provided in HH:MM format
 if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
@@ -46,7 +46,7 @@ if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
     print_usage
     exit
 else
-    echo -e "Run time limit set to $RUN_TIME\n"
+    echo -e "Run time limit set to $RUN_TIME"
 fi
 MEM_PER_CORE=$4
 # check if MEM_PER_CORE is an integer
@@ -60,7 +60,7 @@ echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for leftover files from previous sessions"
-ssh $USERNAME@euler.ethz.ch <<ENDSSH
+ssh -T $USERNAME@euler.ethz.ch <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
         rm /cluster/home/$USERNAME/jnbinfo
