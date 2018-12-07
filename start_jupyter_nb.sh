@@ -33,7 +33,7 @@ if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
         exit
 fi
 # check if NUM_CORES is <= 36
-if [ $NUM_CORES > 36 ]; then
+if [ "$NUM_CORES" -gt "36" ]; then
     echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36\n"
     print_usage
     exit
