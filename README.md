@@ -1,6 +1,6 @@
 # Jupyter on Euler
 
-This shell script starts a Jupyter notebook in a batch job on Euler and connects your local browser with it.
+When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler and connects your local browser with it.
 
 ## Requirements
 
