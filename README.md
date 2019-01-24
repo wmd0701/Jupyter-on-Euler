@@ -8,7 +8,17 @@ The script assumes that you have setup SSH keys for passwordless access to the c
 
 https://scicomp.ethz.ch/wiki/Accessing_the_clusters#SSH_keys
 
-Please note that the example on the wiki refers to the Euler cluster and for Leonhard Open, then hostname needs to be changed from euler.ethz.ch to login.leonhard.ethz.ch
+Please note that the example on the wiki refers to the Euler cluster and for Leonhard Open, then hostname needs to be changed from
+
+```
+euler.ethz.ch
+```
+
+to
+
+```
+login.leonhard.ethz.ch
+```
 
 Currently the script runs on Linux and Mac OS X. When using a Linux computer, please make sure that xdg-open is installed. You can install it with the command
 
