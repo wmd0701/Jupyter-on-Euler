@@ -1,6 +1,6 @@
 # Jupyter on Euler or Leonhard Open
 
-When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler or Leonhard Open and connects your local browser with it.
+When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler/Leonhard Open (depending on which cluster you choose) and connects your local browser with it.
 
 ## Requirements
 
