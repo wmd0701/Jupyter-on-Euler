@@ -1,53 +1,70 @@
 #!/bin/bash
 
-# script to start a jupyter notebook from a local computer on Euler
+# Script to start a jupyter notebook from a local computer on Euler or Leonhard Open
 # Samuel Fux, Dec. 2018 @ETH Zurich
+# change history:
+# 24.01.2019    Added option to specify cluster on which the notebook is executed
 
 # function to print usage instructions
 function print_usage {
-        echo -e "Usage:\tstart_jupyter_nb.sh NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
+        echo -e "Usage:\tstart_jupyter_nb.sh CLUSTER NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
+        echo -e "CLUSTER\t\t Name of the cluster on which the jupyter notebook should be started (Euler or LeoOpen)"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started"
         echo -e "NUM_CORES\t\tNumber of cores to be used on the cluster (<36)"
         echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)"
         echo -e "MEM_PER_CORE\t\tMemory limit in MB per core\n"
         echo -e "Example:\n"
-        echo -e "./start_jupyter_nb.sh sfux 4 01:20 2048\n"
+        echo -e "./start_jupyter_nb.sh Euler sfux 4 01:20 2048\n"
 }
 
 # if number of command line arguments is different from 4 or if $1==-h or $1==--help
-if [ "$#" !=  4 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-        print_usage
-        exit
+if [ "$#" !=  5 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    print_usage
+    exit
 fi
 
 # Parse and check command line arguments (NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
 
+# check on which cluster the script should run
+CLUSTERNAME="$1"
+
+if [ "$CLUSTERNAME" == "Euler" ]; then
+    CHOSTNAME="euler.ethz.ch"
+    PCOMMAND="python/3.6.1"
+elif [ "$CLUSTERNAME" == "LeoOpen"]; then
+    CHOSTNAME="login.leonhard.ethz.ch"
+    PCOMMAND="python_cpu/3.6.4"
+else
+    echo -e "Incorrect cluster name. Please specify Euler or LeoOpen as cluster and and try again.\n"
+    print_usage
+    exit
+fi
+
 # no need to do checks on the username. If it is wrong, the SSH commands will not work
-USERNAME="$1"
+USERNAME="$2"
 echo -e "\nNETHZ username: $USERNAME"
 
 # number of cores to be used
-NUM_CORES=$2
+NUM_CORES=$3
 
 # check if NUM_CORES is an integer
-if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]
-    then
-        echo -e "Incorrect format. Please specify number of cores as an integer and try again\n"
-        print_usage
-        exit
+if ! [[ "$NUM_CORES" =~ ^[0-9]+$ ]]; then
+    echo -e "Incorrect format. Please specify number of cores as an integer and try again.\n"
+    print_usage
+    exit
 fi
 
 # check if NUM_CORES is <= 36
 if [ "$NUM_CORES" -gt "36" ]; then
-    echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36\n"
+    echo -e "No distributed memory supported, therefore number of cores needs to be smaller or equal to 36.\n"
     print_usage
     exit
 fi
 echo -e "Jupyter notebook will run on $NUM_CORES cores"
 
 # run time limit
-RUN_TIME="$3"
+RUN_TIME="$4"
 
 # check if RUN_TIME is provided in HH:MM format
 if ! [[ "$RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
@@ -59,7 +76,7 @@ else
 fi
 
 # memory per core
-MEM_PER_CORE=$4
+MEM_PER_CORE=$5
 
 # check if MEM_PER_CORE is an integer
 if ! [[ "$MEM_PER_CORE" =~ ^[0-9]+$ ]]
@@ -72,7 +89,7 @@ echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for leftover files from previous sessions"
-ssh -T $USERNAME@euler.ethz.ch <<ENDSSH
+ssh -T $USERNAME@$CHOSTNAME <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
         rm /cluster/home/$USERNAME/jnbinfo
@@ -83,11 +100,11 @@ if [ -f /cluster/home/$USERNAME/jnbip ]; then
 fi 
 ENDSSH
 
-# run the jupyter notebook job on Euler and save ip, port and the token
+# run the jupyter notebook job on Euler/Leonhard Open and save ip, port and the token
 # in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to Euler to start jupyter notebook in a batch job"
-ssh $USERNAME@euler.ethz.ch bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
-module load new python/3.6.1
+ssh $USERNAME@$CHOSTNAME bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
+module load new $PCOMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
@@ -96,13 +113,13 @@ ENDBSUB
 
 # wait until jupyternotebook has started, poll every 10 seconds to check if $HOME/jupyternbinfo exists
 # once the file exists and is not empty, the notebook has been startet and is listening
-ssh $USERNAME@euler.ethz.ch "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for 10 sec'; sleep 10; done"
+ssh $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for 10 sec'; sleep 10; done"
 
-# get remote ip, port and token from files stored on Euler
+# get remote ip, port and token from files stored on Euler/Leonhard Open
 echo -e "Receiving ip, port and token from jupyter notebook"
-remoteip=$(ssh $USERNAME@euler.ethz.ch cat "/cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
-remoteport=$(ssh $USERNAME@euler.ethz.ch "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
-jnbtoken=$(ssh $USERNAME@euler.ethz.ch "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
+remoteip=$(ssh $USERNAME@$CHOSTNAME cat "/cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
+remoteport=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
+jnbtoken=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
 echo -e "Remote IP address: $remoteip"
 echo -e "Remote port: $remoteport"
@@ -115,7 +132,7 @@ echo -e "Local port: $PORTN"
 
 # setup SSH tunnel from local computer to compute node via login node
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
-ssh $USERNAME@euler.ethz.ch -L $PORTN:$remoteip:$remoteport -N &
+ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &
 
 # SSH tunnel is started in the background, pause 5 seconds to make sure
 # it is established before starting the browser
