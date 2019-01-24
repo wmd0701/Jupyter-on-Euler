@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to start a jupyter notebook from a local computer on Euler or Leonhard Open
+# Script to start a jupyter notebook from a local computer on Euler/Leonhard Open
 # Samuel Fux, Dec. 2018 @ETH Zurich
 # change history:
 # 24.01.2019    Added option to specify cluster on which the notebook is executed
@@ -103,8 +103,8 @@ fi
 ENDSSH
 
 # run the jupyter notebook job on Euler/Leonhard Open and save ip, port and the token
-# in the files jnbip and jninfo in the home directory of the user on Euler
-echo -e "Connecting to Euler to start jupyter notebook in a batch job"
+# in the files jnbip and jninfo in the home directory of the user on Euler/Leonhard Open
+echo -e "Connecting to $CLUSTERNAME to start jupyter notebook in a batch job"
 ssh $USERNAME@$CHOSTNAME bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
 module load $PCOMMAND
 export XDG_RUNTIME_DIR=
