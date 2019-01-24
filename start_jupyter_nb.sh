@@ -7,9 +7,9 @@
 
 # function to print usage instructions
 function print_usage {
-        echo -e "Usage:\tstart_jupyter_nb.sh CLUSTER NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
+        echo -e "Usage:\t start_jupyter_nb.sh CLUSTER NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE\n"
         echo -e "Arguments:\n"
-        echo -e "CLUSTER\t\t Name of the cluster on which the jupyter notebook should be started (Euler or LeoOpen)"
+        echo -e "CLUSTER\t\t\t Name of the cluster on which the jupyter notebook should be started (Euler or LeoOpen)"
         echo -e "NETHZ_USERNAME\t\tNETHZ username for which the notebook should be started"
         echo -e "NUM_CORES\t\tNumber of cores to be used on the cluster (<36)"
         echo -e "RUN_TIME\t\tRun time limit for the jupyter notebook on the cluster (HH:MM)"
@@ -32,7 +32,7 @@ CLUSTERNAME="$1"
 if [ "$CLUSTERNAME" == "Euler" ]; then
     CHOSTNAME="euler.ethz.ch"
     PCOMMAND="python/3.6.1"
-elif [ "$CLUSTERNAME" == "LeoOpen"]; then
+elif [ "$CLUSTERNAME" == "LeoOpen" ]; then
     CHOSTNAME="login.leonhard.ethz.ch"
     PCOMMAND="python_cpu/3.6.4"
 else
@@ -41,9 +41,11 @@ else
     exit
 fi
 
+echo -e "\nCluster: $CLUSTERNAME"
+
 # no need to do checks on the username. If it is wrong, the SSH commands will not work
 USERNAME="$2"
-echo -e "\nNETHZ username: $USERNAME"
+echo -e "NETHZ username: $USERNAME"
 
 # number of cores to be used
 NUM_CORES=$3
