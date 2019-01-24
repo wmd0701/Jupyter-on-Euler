@@ -119,7 +119,7 @@ ssh $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cl
 
 # get remote ip, port and token from files stored on Euler/Leonhard Open
 echo -e "Receiving ip, port and token from jupyter notebook"
-remoteip=$(ssh $USERNAME@$CHOSTNAME cat "/cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
+remoteip=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
 remoteport=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
 jnbtoken=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
