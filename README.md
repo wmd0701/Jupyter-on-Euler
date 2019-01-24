@@ -20,7 +20,7 @@ to
 login.leonhard.ethz.ch
 ```
 
-Currently the script runs on Linux and Mac OS X. When using a Linux computer, please make sure that xdg-open is installed. You can install it with the command
+Currently the script runs on Linux and Mac OS X. When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
 
 CentOS:
 
