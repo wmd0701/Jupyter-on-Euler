@@ -26,7 +26,7 @@ fi
 
 # Parse and check command line arguments (NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
 
-# check on which cluster the script should run
+# check on which cluster the script should run and load the proper python module
 CLUSTERNAME="$1"
 
 if [ "$CLUSTERNAME" == "Euler" ]; then
