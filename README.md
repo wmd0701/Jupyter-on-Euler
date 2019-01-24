@@ -69,7 +69,7 @@ Example:
 ./start_jupyter_nb.sh Euler sfux 4 01:20 2048
 ```
 
-Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" button in your Browser. This will stop the batch job running on Euler. Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
+Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" or "Logout" button in your Browser. This will stop the batch job running on Euler. Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
 
 ```
 samfux@bullvalene:~/Jupyter-on-Euler-or-Leonhard-Open$ ps -u | grep -m1 -- "-L" | grep -- "-N"
