@@ -110,6 +110,7 @@ module load new $PCOMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
+module list
 jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinfo 
 ENDBSUB
 
