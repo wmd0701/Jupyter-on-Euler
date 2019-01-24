@@ -31,7 +31,7 @@ CLUSTERNAME="$1"
 
 if [ "$CLUSTERNAME" == "Euler" ]; then
     CHOSTNAME="euler.ethz.ch"
-    PCOMMAND="python/3.6.1"
+    PCOMMAND="new python/3.6.1"
 elif [ "$CLUSTERNAME" == "LeoOpen" ]; then
     CHOSTNAME="login.leonhard.ethz.ch"
     PCOMMAND="python_cpu/3.6.4"
@@ -106,11 +106,10 @@ ENDSSH
 # in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to Euler to start jupyter notebook in a batch job"
 ssh $USERNAME@$CHOSTNAME bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
-module load new $PCOMMAND
+module load $PCOMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
-module list
 jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinfo 
 ENDBSUB
 
