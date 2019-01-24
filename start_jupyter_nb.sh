@@ -90,7 +90,7 @@ fi
 echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
-echo -e "Checking for leftover files from previous sessions"
+echo -e "Checking for left over files from previous sessions"
 ssh -T $USERNAME@$CHOSTNAME <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
