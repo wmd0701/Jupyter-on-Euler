@@ -36,6 +36,8 @@ apt-get install xdg-utils
 
 ## Usage
 
+### Install
+
 Download the repository with the commnad
 
 ```
@@ -47,6 +49,8 @@ After downloading the script from gitlab.ethz.ch, you need to change its permiss
 ```
 chmod 755 start_jupyter_nb.sh
 ```
+
+### Run Jupyter in a batch job
 
 Running the script:
 
@@ -68,6 +72,15 @@ Example:
 ```
 ./start_jupyter_nb.sh Euler sfux 4 01:20 2048
 ```
+
+### Running multiple notebooks in a single Jupyter instance
+If you run Jupyter on the Leonhard cluster, using GPUs, then you need to make sure a notebook is correctly terminated before you can start another one.
+
+If you don't properly close the first notebook and run a second one, then the previous notebook will still occupy some GPU memory and have processes running, which will throw some errors, when executing the second notebook.
+
+Therefore please make sure that you stop running kernels in the "running" tab in the browser, before starting a new notebook.
+
+### Terminate the Jupyter session
 
 Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" or "Logout" button in your Browser. This will stop the batch job running on Euler. Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
 
