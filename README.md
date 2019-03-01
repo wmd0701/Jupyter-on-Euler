@@ -1,4 +1,5 @@
 # Jupyter on Euler or Leonhard Open
+This project aims to help beginner users to run simple jupyter notebooks on our HPC clusters Euler and Leonhard. It is not addressing advanced users that need a wide range of additional features going beyond simple jupyter notebooks. There will soon be an new section added, providing hints for advanced users on how to run jupyer notebooks without this script.
 
 When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler/Leonhard Open (depending on which cluster you choose) and connects your local browser with it.
 
@@ -33,6 +34,8 @@ Ubuntu:
 ```
 apt-get install xdg-utils
 ```
+
+Further more, the script requieres that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
 
 ## Usage
 
