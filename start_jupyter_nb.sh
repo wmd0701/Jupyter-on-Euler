@@ -123,6 +123,24 @@ remoteip=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbip | grep -m
 remoteport=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
 jnbtoken=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
+if  [[ "$remoteip" == "" ]]; then
+    echo -e "Error: remote ip is not defined. Terminating script."
+    echo -e "Please login to the cluster and check with bjobs if the batch job is still running."
+    exit 1
+fi
+
+if  [[ "$remoteport" == "" ]]; then
+    echo -e "Error: remote port is not defined. Terminating script."
+    echo -e "Please login to the cluster and check with bjobs if the batch job is still running."
+    exit 1
+fi
+
+if  [[ "$jnbtoken" == "" ]]; then
+    echo -e "Error: token for the jupyter notebook is not defined. Terminating script."
+    echo -e "Please login to the cluster and check with bjobs if the batch job is still running."
+    exit 1
+fi
+
 echo -e "Remote IP address: $remoteip"
 echo -e "Remote port: $remoteport"
 echo -e "Jupyter token: $jnbtoken"
