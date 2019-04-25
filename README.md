@@ -55,7 +55,7 @@ chmod 755 start_jupyter_nb.sh
 
 ### Run Jupyter in a batch job
 
-Running the script:
+The start_jupyer_nb.sh script needs to be executed on your local computer:
 
 ```
 ./start_jupyter_nb.sh CLUSTER NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE
