@@ -35,7 +35,7 @@ Ubuntu:
 apt-get install xdg-utils
 ```
 
-Further more, the script requieres that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
+Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
 
 ## Usage
 
