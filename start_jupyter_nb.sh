@@ -4,6 +4,7 @@
 # Samuel Fux, Dec. 2018 @ETH Zurich
 # change history:
 # 24.01.2019    Added option to specify cluster on which the notebook is executed
+# 01.10.2019    Added bash and R kernels for jupyter notebooks
 
 # function to print usage instructions
 function print_usage {
@@ -31,10 +32,10 @@ CLUSTERNAME="$1"
 
 if [ "$CLUSTERNAME" == "Euler" ]; then
     CHOSTNAME="euler.ethz.ch"
-    PCOMMAND="new python/3.6.1"
+    PCOMMAND="new gcc/4.8.2 r/3.6.0 python/3.6.1"
 elif [ "$CLUSTERNAME" == "LeoOpen" ]; then
     CHOSTNAME="login.leonhard.ethz.ch"
-    PCOMMAND="python_cpu/3.6.4"
+    PCOMMAND="r/3.5.1 python_cpu/3.6.4"
 else
     echo -e "Incorrect cluster name. Please specify Euler or LeoOpen as cluster and and try again.\n"
     print_usage
