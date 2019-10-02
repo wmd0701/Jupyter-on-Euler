@@ -97,6 +97,41 @@ samfux@bullvalene:~/jupyter-on-Euler-or-Leonhard-Open$ kill 8729
 
 When using this script, you can either use the Python 3.6 Kernel, or in addition a bash kernel or an R kernel (3.6.0 on Euler, 3.5.1 on Leonhard Open)
 
+### Installing additional Python and R packages locally
+
+When starting a Jupyter notebook with this script, then it will use a central Python and R installation:
+
+```
+Euler: python/3.6.1, r/3.6.0
+Leonhard Open: python_cpu/3.6.4, r/3.5.1
+```
+
+Therefore you can only use packages that are centrally installed out-of-the-box. But you have the option to install additional packages locally in your home directory, which can afterwards be used.
+
+For installing a Python package from inside a Jupyter notebook, you would need to run the following command:
+
+```
+!pip install --user package_name
+```
+
+This will install <tt>package_name</tt> into <tt>$HOME/.local</tt>, as described on our wiki page about Python:
+
+```
+https://scicomp.ethz.ch/wiki/Python#Installing_a_Python_package.2C_using_PIP
+```
+
+The command to locally install an R package:
+
+```
+install.packages("package_name")
+```
+
+Then follow the instructions provided on our wiki:
+
+```
+https://scicomp.ethz.ch/wiki/R#Extensions
+```
+
 ## Authors
 * Samuel Fux
 * Andrei Plamada
