@@ -32,10 +32,10 @@ CLUSTERNAME="$1"
 
 if [ "$CLUSTERNAME" == "Euler" ]; then
     CHOSTNAME="euler.ethz.ch"
-    PCOMMAND="new gcc/4.8.2 r/3.6.0 python/3.6.1"
+    PCOMMAND="new gcc/4.8.2 r/3.6.0 python/3.6.1 eth_proxy"
 elif [ "$CLUSTERNAME" == "LeoOpen" ]; then
     CHOSTNAME="login.leonhard.ethz.ch"
-    PCOMMAND="r/3.5.1 python_cpu/3.6.4"
+    PCOMMAND="r/3.5.1 python_cpu/3.6.4 eth_proxy"
 else
     echo -e "Incorrect cluster name. Please specify Euler or LeoOpen as cluster and and try again.\n"
     print_usage
