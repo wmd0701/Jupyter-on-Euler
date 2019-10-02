@@ -85,7 +85,7 @@ Therefore please make sure that you stop running kernels in the "running" tab in
 
 ### Terminate the Jupyter session
 
-Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" or "Logout" button in your Browser. This will stop the batch job running on Euler. Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
+Please note that when you finish working with the jupyter notebook, you need to click on the "Quit" or "Logout" button in your Browser. "Quite" will stop the batch job running on Euler, "Logout" will just log you out from the session but not stop the batch job (in this case you need to login to the cluster, identify the job with bjobs and then kill it with the bkill command, using the jobid as parameter). Afterwards you also need to clean up the SSH tunnel that is running in the background. Example:
 
 ```
 samfux@bullvalene:~/Jupyter-on-Euler-or-Leonhard-Open$ ps -u | grep -m1 -- "-L" | grep -- "-N"
