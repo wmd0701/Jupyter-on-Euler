@@ -93,6 +93,10 @@ samfux    8729  0.0  0.0  59404  6636 pts/5    S    13:46   0:00 ssh sfux@euler.
 samfux@bullvalene:~/jupyter-on-Euler-or-Leonhard-Open$ kill 8729
 ```
 
+### Additional kernels
+
+When using this script, you can either use the Python 3.6 Kernel, or in addition a bash kernel or an R kernel (3.6.0 on Euler, 3.5.1 on Leonhard Open)
+
 ## Authors
 * Samuel Fux
 * Andrei Plamada
