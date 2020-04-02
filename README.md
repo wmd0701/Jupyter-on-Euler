@@ -76,6 +76,9 @@ Example:
 ./start_jupyter_nb.sh Euler sfux 4 01:20 2048
 ```
 
+### Reconnect to a Jupyter notebook
+When running the script, it creates a local file called reconnect_info in the installation directory, which contains all information regarding the used ports, the remote ip address, the command for the SSH tunnel and the URL for the browser. This information should be sufficient to reconnect to a Jupyter notebook if connection was lost.
+
 ### Running multiple notebooks in a single Jupyter instance
 If you run Jupyter on the Leonhard cluster, using GPUs, then you need to make sure a notebook is correctly terminated before you can start another one.
 
