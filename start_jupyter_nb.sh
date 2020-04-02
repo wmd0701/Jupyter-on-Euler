@@ -163,7 +163,7 @@ echo -e "Local port: $PORTN"
 echo -e "Restart file \n" >> $SCRIPTDIR/reconnect_info
 echo -e "Remote IP address: $remoteip\n" >> $SCRIPTDIR/reconnect_info
 echo -e "Remote port: $remoteport\n" >> $SCRIPTDIR/reconnect_info
-echo -e "Local port: $PORTN\n"
+echo -e "Local port: $PORTN\n" >> $SCRIPTDIR/reconnect_info
 echo -e "Jupyter token: $jnbtoken\n" >> $SCRIPTDIR/reconnect_info
 echo -e "SSH tunnel: ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &\n" >> $SCRIPTDIR/reconnect_info
 echo -e "URL: http://localhost:$PORTN/?token=$jnbtoken\n" >> $SCRIPTDIR/reconnect_info
