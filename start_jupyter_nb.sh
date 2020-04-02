@@ -5,6 +5,7 @@
 # change history:
 # 24.01.2019    Added option to specify cluster on which the notebook is executed
 # 01.10.2019    Added bash and R kernels for jupyter notebooks
+# 02.04.2020    Added reconnect_info file that contains all information to reconnect to a notebook
 
 # function to print usage instructions
 function print_usage {
@@ -95,8 +96,8 @@ echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for left over files from previous sessions"
-if [ -f $SCRIPTDIR/restart_info ]; then
-        echo -e "Found old restart_info file, deleting it ..."
+if [ -f $SCRIPTDIR/reconnect_info ]; then
+        echo -e "Found old reconnect_info file, deleting it ..."
         rm $SCRIPTDIR/restart_info
 fi
 ssh -T $USERNAME@$CHOSTNAME <<ENDSSH
@@ -159,12 +160,13 @@ PORTN=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.get
 echo -e "Local port: $PORTN"
 
 # write restart_info file
-echo -e "Restart file \n" >> $SCRIPTDIR/restart_info
-echo -e "Remote IP address: $remoteip\n" >> $SCRIPTDIR/restart_info
-echo -e "Remote port: $remoteport\n" >> $SCRIPTDIR/restart_info
-echo -e "Jupyter token: $jnbtoken\n" >> $SCRIPTDIR/restart_info
-echo -e "SSH tunnel: ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &" >> $SCRIPTDIR/restart_info
-echo -e "URL: http://localhost:$PORTN/?token=$jnbtoken" >> $SCRIPTDIR/restart_info
+echo -e "Restart file \n" >> $SCRIPTDIR/reconnect_info
+echo -e "Remote IP address: $remoteip\n" >> $SCRIPTDIR/reconnect_info
+echo -e "Remote port: $remoteport\n" >> $SCRIPTDIR/reconnect_info
+echo -e "Local port: $PORTN\n"
+echo -e "Jupyter token: $jnbtoken\n" >> $SCRIPTDIR/reconnect_info
+echo -e "SSH tunnel: ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &\n" >> $SCRIPTDIR/reconnect_info
+echo -e "URL: http://localhost:$PORTN/?token=$jnbtoken\n" >> $SCRIPTDIR/reconnect_info
 
 # setup SSH tunnel from local computer to compute node via login node
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
