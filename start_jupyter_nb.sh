@@ -25,6 +25,9 @@ if [ "$#" !=  5 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     exit
 fi
 
+# find out in which directory the script is located
+SCRIPTDIR=$(dirname $(realpath -s $0))
+
 # Parse and check command line arguments (cluster, NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
 
 # check on which cluster the script should run and load the proper python module
@@ -92,6 +95,10 @@ echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 
 # check if some old files are left from a previous session and delete them
 echo -e "Checking for left over files from previous sessions"
+if [ -f $SCRIPTDIR/restart_info ]; then
+        echo -e "Found old restart_info file, deleting it ..."
+        rm $SCRIPTDIR/restart_info
+fi
 ssh -T $USERNAME@$CHOSTNAME <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
@@ -150,6 +157,14 @@ echo -e "Jupyter token: $jnbtoken"
 echo -e "Determining free port on local computer"
 PORTN=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
 echo -e "Local port: $PORTN"
+
+# write restart_info file
+echo -e "Restart file \n" >> $SCRIPTDIR/restart_info
+echo -e "Remote IP address: $remoteip\n" >> $SCRIPTDIR/restart_info
+echo -e "Remote port: $remoteport\n" >> $SCRIPTDIR/restart_info
+echo -e "Jupyter token: $jnbtoken\n" >> $SCRIPTDIR/restart_info
+echo -e "SSH tunnel: ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &" >> $SCRIPTDIR/restart_info
+echo -e "URL: http://localhost:$PORTN/?token=$jnbtoken" >> $SCRIPTDIR/restart_info
 
 # setup SSH tunnel from local computer to compute node via login node
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
