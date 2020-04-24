@@ -76,7 +76,7 @@ Example:
 ./start_jupyter_nb.sh Euler sfux 4 01:20 2048
 ```
 
-### Starting in a different location than your home directory ###
+### Starting in a different location than your home directory
 By default, the Jupyter notebook will start in your home directory. It is also possible to start in a different location. For this you would need to change line 122 in the script from
 
 ```
