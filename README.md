@@ -76,6 +76,21 @@ Example:
 ./start_jupyter_nb.sh Euler sfux 4 01:20 2048
 ```
 
+### Staring in a different location than your home directory ###
+By default, the Jupyter notebook will start in your home directory. It is also possible to start in a different location. For this you would need to change line 122 in the script from
+
+```
+jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinf
+```
+
+to
+
+```
+jupyter notebook --no-browser --ip "\$IP_REMOTE" --notebook-dir PATH &> /cluster/home/$USERNAME/jnbinf
+```
+
+where PATH needs to be replaced with the path in which the Jupyter notebook should start.
+
 ### Reconnect to a Jupyter notebook
 When running the script, it creates a local file called reconnect_info in the installation directory, which contains all information regarding the used ports, the remote ip address, the command for the SSH tunnel and the URL for the browser. This information should be sufficient to reconnect to a Jupyter notebook if connection was lost.
 
