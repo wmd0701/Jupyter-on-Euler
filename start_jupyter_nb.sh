@@ -124,7 +124,7 @@ ENDBSUB
 
 # wait until jupyternotebook has started, poll every 10 seconds to check if $HOME/jupyternbinfo exists
 # once the file exists and is not empty, the notebook has been startet and is listening
-ssh $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for 10 sec'; sleep 10; done"
+ssh $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for 20 sec'; sleep 20; done"
 
 # get remote ip, port and token from files stored on Euler/Leonhard Open
 echo -e "Receiving ip, port and token from jupyter notebook"
