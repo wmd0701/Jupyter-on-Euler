@@ -47,6 +47,12 @@ Download the repository with the commnad
 git clone https://gitlab.ethz.ch/sfux/Jupyter-on-Euler-or-Leonhard-Open
 ```
 
+Mac OS X:
+
+```
+git clone https://gitlab.ethz.ch/sfux/Jupyter-on-Euler-or-Leonhard-Open.git
+```
+
 After downloading the script from gitlab.ethz.ch, you need to change its permissions to make it executable
 
 ```
