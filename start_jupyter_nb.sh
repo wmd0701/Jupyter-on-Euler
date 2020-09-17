@@ -49,7 +49,7 @@ if [ "$#" !=  5 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
 fi
 
 # find out in which directory the script is located
-SCRIPTDIR=$(dirname $(realpath -s $0))
+SCRIPTDIR=$(pwd)
 
 # Parse and check command line arguments (cluster, NETHZ username, number of cores, run time limit, memory limit per NUM_CORES)
 
