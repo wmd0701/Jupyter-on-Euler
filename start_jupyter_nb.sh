@@ -6,6 +6,28 @@
 # 24.01.2019    Added option to specify cluster on which the notebook is executed
 # 01.10.2019    Added bash and R kernels for jupyter notebooks
 # 02.04.2020    Added reconnect_info file that contains all information to reconnect to a notebook
+# 17.08.2020    Added a section with configuration options to specify non-standard SSH keys
+
+#########################
+# Configuration options #
+#########################
+
+# SSH key location is the path to your SSH key. Please specify the path if you are using a non-standard name for your SSH key
+SSH_KEY_LOCATION=""
+
+# Waiting time interval after starting the jupyter notebook. Check every $WAITING_TIME_INTERVAL seconds if the job already started
+WAITING_TIME_INTERVAL=60
+
+#############################
+# End configuration options #
+#############################
+
+# check if SSH_KEY_LOCATION is empty or contains a valid path
+if [ -z "$SSH_KEY_LOCATION" ]; then
+    SSH_KEY_OPTION=""
+else
+    SSH_KEY_OPTION="-i $SSH_KEY_LOCATION"
+fi
 
 # function to print usage instructions
 function print_usage {
@@ -100,7 +122,7 @@ if [ -f $SCRIPTDIR/reconnect_info ]; then
         echo -e "Found old reconnect_info file, deleting it ..."
         rm $SCRIPTDIR/restart_info
 fi
-ssh -T $USERNAME@$CHOSTNAME <<ENDSSH
+ssh $SSH_KEY_OPTION -T $USERNAME@$CHOSTNAME <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
         rm /cluster/home/$USERNAME/jnbinfo
@@ -114,7 +136,7 @@ ENDSSH
 # run the jupyter notebook job on Euler/Leonhard Open and save ip, port and the token
 # in the files jnbip and jninfo in the home directory of the user on Euler/Leonhard Open
 echo -e "Connecting to $CLUSTERNAME to start jupyter notebook in a batch job"
-ssh $USERNAME@$CHOSTNAME bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
+ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME bsub -n $NUM_CORES -W $RUN_TIME -R "rusage[mem=$MEM_PER_CORE]"  <<ENDBSUB
 module load $PCOMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
@@ -124,13 +146,13 @@ ENDBSUB
 
 # wait until jupyternotebook has started, poll every 10 seconds to check if $HOME/jupyternbinfo exists
 # once the file exists and is not empty, the notebook has been startet and is listening
-ssh $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for 60 sec'; sleep 60; done"
+ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for $WAITING_TIME_INTERVAL sec'; sleep $WAITING_TIME_INTERVAL; done"
 
 # get remote ip, port and token from files stored on Euler/Leonhard Open
 echo -e "Receiving ip, port and token from jupyter notebook"
-remoteip=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
-remoteport=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
-jnbtoken=$(ssh $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
+remoteip=$(ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
+remoteport=$(ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
+jnbtoken=$(ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME "cat /cluster/home/$USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
 if  [[ "$remoteip" == "" ]]; then
     echo -e "Error: remote ip is not defined. Terminating script."
@@ -170,7 +192,7 @@ echo -e "URL: http://localhost:$PORTN/?token=$jnbtoken\n" >> $SCRIPTDIR/reconnec
 
 # setup SSH tunnel from local computer to compute node via login node
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
-ssh $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &
+ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME -L $PORTN:$remoteip:$remoteport -N &
 
 # SSH tunnel is started in the background, pause 5 seconds to make sure
 # it is established before starting the browser
