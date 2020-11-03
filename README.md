@@ -37,6 +37,34 @@ apt-get install xdg-utils
 
 Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
 
+## Using SSH keys with non-default names
+Since the reopening of Euler and Leonhard Open after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys. We recommend to use different keys for Euler and Leonhard Open, with according names
+
+```
+$HOME/.ssh/id_ed25519_euler
+$HOME/.ssh/id_ed25519_leonhard
+```
+
+In order to use those keys with the jupyter script, you would need to edit the following section at the beginning of the script and add the path to your SSH keys. In the example below we show how this would look like for Euler:
+
+```
+#########################
+# Configuration options #
+#########################
+
+# SSH key location is the path to your SSH key. Please specify the path if you are using a non-standard name for your SSH key
+SSH_KEY_LOCATION="'''$HOME/.ssh/id_ed255519_euler'''" 
+
+# Waiting time interval after starting the jupyter notebook. Check every $WAITING_TIME_INTERVAL seconds if the job already started
+WAITING_TIME_INTERVAL=60
+
+#############################
+# End configuration options #
+#############################
+```
+
+This is required to use SSH keys with non-default names.
+
 ## Usage
 
 ### Install
