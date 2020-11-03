@@ -53,7 +53,7 @@ In order to use those keys with the jupyter script, you would need to edit the f
 #########################
 
 # SSH key location is the path to your SSH key. Please specify the path if you are using a non-standard name for your SSH key
-SSH_KEY_LOCATION="'''$HOME/.ssh/id_ed255519_euler'''" 
+SSH_KEY_LOCATION="$HOME/.ssh/id_ed255519_euler" 
 
 # Waiting time interval after starting the jupyter notebook. Check every $WAITING_TIME_INTERVAL seconds if the job already started
 WAITING_TIME_INTERVAL=60
