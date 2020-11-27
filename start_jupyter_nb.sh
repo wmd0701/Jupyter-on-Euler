@@ -120,7 +120,7 @@ echo -e "Memory per core set to $MEM_PER_CORE MB\n"
 echo -e "Checking for left over files from previous sessions"
 if [ -f $SCRIPTDIR/reconnect_info ]; then
         echo -e "Found old reconnect_info file, deleting it ..."
-        rm $SCRIPTDIR/restart_info
+        rm $SCRIPTDIR/reconnect_info
 fi
 ssh $SSH_KEY_OPTION -T $USERNAME@$CHOSTNAME <<ENDSSH
 if [ -f /cluster/home/$USERNAME/jnbinfo ]; then
