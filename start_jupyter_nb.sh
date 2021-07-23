@@ -7,6 +7,7 @@
 # 01.10.2019    Added bash and R kernels for jupyter notebooks
 # 02.04.2020    Added reconnect_info file that contains all information to reconnect to a notebook
 # 17.08.2020    Added a section with configuration options to specify non-standard SSH keys
+# 23.07.2021    Added partial support for windows 10 with git-bash (thank you Henry Lütcke for the input)
 
 #########################
 # Configuration options #
@@ -204,10 +205,12 @@ echo -e "Starting browser and connecting it to jupyter notebook"
 echo -e "Connecting to url "$nburl
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	xdg-open $nburl
+        xdg-open $nburl
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-	open $nburl
+        open $nburl
+elif [[ "$OSTYPE" == "msys" ]]; then # Git Bash on Windows 10
+        start $nburl
 else
-	echo -e "Your operating system does not allow to start the browser automatically."
+        echo -e "Your operating system does not allow to start the browser automatically."
         echo -e "Please open $nburl in your browser."
 fi
