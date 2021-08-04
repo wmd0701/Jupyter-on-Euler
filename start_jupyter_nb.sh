@@ -182,7 +182,7 @@ echo -e "Determining free port on local computer"
 PORTN=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
 echo -e "Local port: $PORTN"
 
-# write restart_info file
+# write reconnect_info file
 echo -e "Restart file \n" >> $SCRIPTDIR/reconnect_info
 echo -e "Remote IP address: $remoteip\n" >> $SCRIPTDIR/reconnect_info
 echo -e "Remote port: $remoteport\n" >> $SCRIPTDIR/reconnect_info
