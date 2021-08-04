@@ -21,7 +21,7 @@ to
 login.leonhard.ethz.ch
 ```
 
-Currently the script runs on Linux and Mac OS X. Windows is not supported as the script is written in bash and uses a Python command. When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
+Currently the script runs on Linux and Mac OS X. Windows is not supported as the script is written in bash and uses a Python command (even though some cluster users could manage to make the script run under Windows WSL). When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
 
 CentOS:
 
