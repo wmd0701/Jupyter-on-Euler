@@ -145,7 +145,7 @@ echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
 jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinfo 
 ENDBSUB
 
-# wait until jupyternotebook has started, poll every 10 seconds to check if $HOME/jupyternbinfo exists
+# wait until jupyternotebook has started, poll every $WAITING_TIME_INTERVAL seconds to check if $HOME/jupyternbinfo exists
 # once the file exists and is not empty, the notebook has been startet and is listening
 ssh $SSH_KEY_OPTION $USERNAME@$CHOSTNAME "while ! [ -e /cluster/home/$USERNAME/jnbinfo -a -s /cluster/home/$USERNAME/jnbinfo ]; do echo 'Waiting for jupyter notebook to start, sleep for $WAITING_TIME_INTERVAL sec'; sleep $WAITING_TIME_INTERVAL; done"
 
