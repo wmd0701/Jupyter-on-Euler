@@ -1,0 +1,7 @@
+USERNAME=jarunanp
+NUM_CORES=4
+NUM_GPUS=2
+RUN_TIME=04:00
+MEM_PER_CORE=2048
+MODULES="gcc/6.3.0 python_gpu/3.8.5 eth_proxy"
+WORKDIR=/cluster/scratch/jarunanp
