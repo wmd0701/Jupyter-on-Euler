@@ -32,7 +32,7 @@ apt-get install xdg-utils
 Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
 
 ## Using SSH keys with non-default names
-Since the reopening of Euler and Leonhard Open after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys. We recommend to use different keys for Euler and Leonhard Open, with according names
+Since the reopening of Euler after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys. We recommend to use different keys for Euler, with according names
 
 ```
 $HOME/.ssh/id_ed25519_euler
@@ -137,7 +137,7 @@ samfux@bullvalene:~/jupyter-on-Euler-or-Leonhard-Open$ kill 8729
 
 ### Additional kernels
 
-When using this script, you can either use the Python 3.6 Kernel, or in addition a bash kernel or an R kernel (3.6.0 on Euler, 3.5.1 on Leonhard Open)
+When using this script, you can either use the Python 3.6 Kernel, or in addition a bash kernel or an R kernel (3.6.0 on Euler)
 
 ### Installing additional Python and R packages locally
 
