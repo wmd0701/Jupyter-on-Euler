@@ -47,7 +47,7 @@ function print_usage {
         echo -e '    ./start_jupyter_nb.sh config.txt \n'
 }
 
-# if number of command line arguments is different from 5 or if $1==-h or $1==--help
+# if number of command line arguments is different from 1 or if $1==-h or $1==--help
 if [ "$#" !=  1 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     print_usage
     exit
