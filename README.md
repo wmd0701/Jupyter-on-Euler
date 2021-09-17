@@ -37,6 +37,9 @@ apt-get install xdg-utils
 
 Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
 
+## Security token vs. password setup
+Please note that a part of the script (parsing of the ports) requires that you use jupyter notebooks with the security tokens. If you configure a password instead, such that you can use the jupyter notebook without the security token, then the script will not work anymore (it cannot parse the port on the remote compute node) without adapting it.
+
 ## Using SSH keys with non-default names
 Since the reopening of Euler and Leonhard Open after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys. We recommend to use different keys for Euler and Leonhard Open, with according names
 
