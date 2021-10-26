@@ -65,6 +65,7 @@ chmod 755 start_jupyter_nb.sh
 
 The start_jupyer_nb.sh script needs to be executed on your local computer. Please find below the list of options that can be used with the script:
 
+```
 $ ./start_jupyter_nb.sh -h
 ./start_jupyter_nb.sh: Script to start a jupyter notebook on Euler from a local computer
 
@@ -108,22 +109,7 @@ JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR="$HOME"     # Working directory for the jupyter notebook
 
-
-
-### Starting in a different location than your home directory
-By default, the Jupyter notebook will start in your home directory. It is also possible to start in a different location. For this you would need to change line 122 in the script from
-
 ```
-jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinf
-```
-
-to
-
-```
-jupyter notebook --no-browser --ip "\$IP_REMOTE" --notebook-dir PATH &> /cluster/home/$USERNAME/jnbinf
-```
-
-where PATH needs to be replaced with the path in which the Jupyter notebook should start.
 
 ### Reconnect to a Jupyter notebook
 When running the script, it creates a local file called reconnect_info in the installation directory, which contains all information regarding the used ports, the remote ip address, the command for the SSH tunnel and the URL for the browser. This information should be sufficient to reconnect to a Jupyter notebook if connection was lost.
@@ -184,11 +170,11 @@ Then follow the instructions provided on our wiki:
 https://scicomp.ethz.ch/wiki/R#Extensions
 ```
 
-## Authors
+## Main author
 * Samuel Fux
-* Andrei Plamada
 
 ## Contributions
 * Urban Borstnik
 * Steven Armstrong
 * Swen Vermeul
+* Jarunan Panyasantisuk
