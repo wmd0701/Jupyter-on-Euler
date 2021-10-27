@@ -354,7 +354,7 @@ ENDSSH
 echo -e "Connecting to $JNB_HOSTNAME to start jupyter notebook in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
-module load $JNB_MOUDLE_COMMAND
+module load $JNB_MODULE_COMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
 jupyter notebook --no-browser --ip "\$IP_REMOTE" --notebook-dir $JNB_WORKING_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
