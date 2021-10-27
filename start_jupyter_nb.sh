@@ -388,7 +388,7 @@ JNB_REMOTE_PORT=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | gr
 JNB_TOKEN=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
 # check if the IP, the port and the token are defined
-if  [[ "$JNB_REMOTE_IP" == "" ]]; then¨
+if  [[ "$JNB_REMOTE_IP" == "" ]]; then
         cat <<-EOF
         Error: remote ip is not defined. Terminating script.
         * Please check login to the cluster and check with bjobs if the batch job on the cluster is running and terminate it with bkill.
