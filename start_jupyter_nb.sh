@@ -224,7 +224,7 @@ fi
 # check that username is not an empty string
 if [ -z "$JNB_USERNAME" ]
 then
-        echo "No ETH username is specified, terminating script\n"
+        echo -e "Error: No ETH username is specified, terminating script\n"
         display_help
 else
         echo -e "ETH username: $JNB_USERNAME"
