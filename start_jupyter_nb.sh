@@ -269,7 +269,7 @@ else
         JNB_SNUM_GPU=""
 fi
 
-if [ ! "$JNB_NUM_CPU" -gt "0" ] -a [ ! "$JNB_NUM_GPU" -gt "0" ]; then
+if [ ! "$JNB_NUM_CPU" -gt "0" -a ! "$JNB_NUM_GPU" -gt "0" ]; then
         echo -e "No CPU and no GPU resources requested, terminating script"
         display_help
 fi
