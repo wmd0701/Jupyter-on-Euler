@@ -140,8 +140,8 @@ When using this script, you can either use the Python 3.6 Kernel, or in addition
 When starting a Jupyter notebook with this script, then it will use a central Python and R installation:
 
 ```
-Euler: python/3.6.1, r/3.6.0
-Leonhard Open: python_cpu/3.6.4, r/3.5.1
+Old software stack: module load new gcc/4.8.2 python/3.6.1
+New software stack: module load gcc/6.3.0 python/3.8.5
 ```
 
 Therefore you can only use packages that are centrally installed out-of-the-box. But you have the option to install additional packages locally in your home directory, which can afterwards be used.
@@ -174,6 +174,7 @@ https://scicomp.ethz.ch/wiki/R#Extensions
 * Samuel Fux
 
 ## Contributions
+* Andrei Plamada
 * Urban Borstnik
 * Steven Armstrong
 * Swen Vermeul
