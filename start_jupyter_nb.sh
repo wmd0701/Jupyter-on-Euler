@@ -18,7 +18,6 @@
 #                * added command line parser for options                      #
 #                * added option for config file                               #
 #                * added option for working directory of the notebook         #
-#                * jnbip file no longer required                              #
 #                * added choice for software stack (old/new)                  #
 #                * added more bsub options                                    #
 #                                                                             #
@@ -352,6 +351,10 @@ if [ -f /cluster/home/$JNB_USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
         rm /cluster/home/$JNB_USERNAME/jnbinfo
 fi
+if [ -f /cluster/home/$JNB_USERNAME/jnbip ]; then
+	echo -e "Found old jnbip file, deleting it ..."
+        rm /cluster/home/$JNB_USERNAME/jnbip
+fi 
 ENDSSH
 
 ###############################################################################
@@ -365,6 +368,7 @@ ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_P
 module load $JNB_MODULE_COMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
+echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
 jupyter notebook --no-browser --ip "\$IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
 
@@ -379,7 +383,7 @@ ENDSSH
 
 # get remote ip, port and token from files stored on Euler
 echo -e "Receiving ip, port and token from jupyter notebook"
-JNB_REMOTE_IP=$(ssh $JNB_SSH_OPT "\$(hostname -i)")
+JNB_REMOTE_IP=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
 JNB_REMOTE_PORT=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
 JNB_TOKEN=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
@@ -420,6 +424,10 @@ echo -e "Jupyter token: $JNB_TOKEN"
 # FIXME: check if there is a solution that does not require python (as Windows computers don't have Python installed by default)
 echo -e "Determining free port on local computer"
 JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
+# if python is not available, one could use
+# JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
+# as a replacement. No guarantee that the port is unused, but so far best non-Python solution
+
 echo -e "Using local port: $JNB_LOCAL_PORT"
 
 # write reconnect_info file
