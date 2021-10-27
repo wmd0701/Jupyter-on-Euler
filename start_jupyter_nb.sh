@@ -83,8 +83,8 @@ JNB_SSH_KEY_PATH=""
 # Software stack default        : new
 JNB_SOFTWARE_STACK="new"
 
-# Workdir default               : $HOME
-JNB_WORKING_DIR="$HOME"
+# Workdir default               : no default
+JNB_WORKING_DIR=""
 
 ###############################################################################
 # Usage instructions                                                          #
@@ -221,7 +221,7 @@ if [ -f "$JNB_CONFIG_FILE" ]; then
         source "$JNB_CONFIG_FILE"
 fi
 
-# check that username is not an empty string
+# check that JNB_USERNAME is not an empty string
 if [ -z "$JNB_USERNAME" ]
 then
         echo -e "Error: No ETH username is specified, terminating script\n"
@@ -232,13 +232,13 @@ fi
 
 # check number of CPU cores
 
-# check if NUMCPU an integer
+# check if JNB_NUM_CPU an integer
 if ! [[ "$JNB_NUM_CPU" =~ ^[0-9]+$ ]]; then
         echo -e "Error: $JNB_NUM_CPU -> Incorrect format. Please specify number of CPU cores as an integer and try again\n"
         display_help
 fi
 
-# check if NUMCPU is <= 128
+# check if JNB_NUM_CPU is <= 128
 if [ "$JNB_NUM_CPU" -gt "128" ]; then
         echo -e "Error: $JNB_NUM_CPU -> Larger than 128. No distributed memory supported, therefore the number of CPU cores needs to be smaller or equal to 128\n"
         display_help
@@ -250,13 +250,13 @@ fi
 
 # check number of GPUs
 
-# check if NUMGPU an integer
+# check if JNB_NUM_GPU an integer
 if ! [[ "$JNB_NUM_GPU" =~ ^[0-9]+$ ]]; then
         echo -e "Error: $JNB_NUM_GPU -> Incorrect format. Please specify the number of GPU as an integer and try again\n"
         display_help
 fi
 
-# check if NUMGPU is <= 8
+# check if JNB_NUM_GPU is <= 8
 if [ "$JNB_NUM_GPU" -gt "8" ]; then
         echo -e "Error: No distributed memory supported, therefore number of GPUs needs to be smaller or equal to 8\n"
         display_help
@@ -274,7 +274,7 @@ if [ ! "$JNB_NUM_CPU" -gt "0" -a ! "$JNB_NUM_GPU" -gt "0" ]; then
         display_help
 fi
 
-# check if RUNTIME is provided in HH:MM format
+# check if JNB_RUN_TIME is provided in HH:MM format
 if ! [[ "$JNB_RUN_TIME" =~ ^[0-9][0-9]:[0-9][0-9]$ ]]; then
         echo -e "Error: $JNB_RUN_TIME -> Incorrect format. Please specify runtime limit in the format HH:MM and try again\n"
         display_help
@@ -282,7 +282,7 @@ else
     echo -e "Run time limit set to $JNB_RUN_TIME"
 fi
 
-# check if MEM is an integer
+# check if JNB_MEM_PER_CPU_CORE is an integer
 if ! [[ "$JNB_MEM_PER_CPU_CORE" =~ ^[0-9]+$ ]]; then
         echo -e "Error: $JNB_MEM_PER_CPU_CORE -> Memory limit must be an integer, please try again\n"
         display_help
@@ -290,20 +290,12 @@ else
     echo -e "Memory per core set to $JNB_MEM_PER_CPU_CORE MB"
 fi
 
-# check if INTERVAL is an integer
+# check if JNB_WAITING_INTERVAL is an integer
 if ! [[ "$JNB_WAITING_INTERVAL" =~ ^[0-9]+$ ]]; then
         echo -e "Error: $JNB_WAITING_INTERVAL -> Waiting time interval [seconds] must be an integer, please try again\n"
         display_help
 else
     echo -e "Setting waiting time interval for checking the start of the job to $JNB_WAITING_INTERVAL seconds"
-fi
-
-# check if KPATH is empty or contains a valid path
-if [ -z "$JNB_SSH_KEY_PATH" ]; then
-        JNB_SKPATH=""
-else
-        JNB_SKPATH="-i $JNB_SSH_KEY_PATH"
-        echo -e "Using SSH key $JNB_SSH_KEY_PATH"
 fi
 
 # check which software stack to use
@@ -321,6 +313,22 @@ case $JNB_SOFTWARE_STACK in
         display_help
         ;;
 esac
+
+# check if JNB_SSH_KEY_PATH is empty or contains a valid path
+if [ -z "$JNB_SSH_KEY_PATH" ]; then
+        JNB_SKPATH=""
+else
+        JNB_SKPATH="-i $JNB_SSH_KEY_PATH"
+        echo -e "Using SSH key $JNB_SSH_KEY_PATH"
+fi
+
+# check if JNB_WORKING_DIR is empty
+if [ -z "$JNB_WORKING_DIR" ]; then
+        JNB_SWORK_DIR=""
+else
+        JNB_SWORK_DIR="--notebook-dir $JNB_WORKING_DIR"
+        echo -e "Using $JNB_WORKING_DIR as working directory"
+fi
 
 # put together string for SSH options
 JNB_SSH_OPT="$JNB_SKPATH $JNB_USERNAME@$JNB_HOSTNAME"
@@ -357,7 +365,7 @@ ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_P
 module load $JNB_MODULE_COMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
-jupyter notebook --no-browser --ip "\$IP_REMOTE" --notebook-dir $JNB_WORKING_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
+jupyter notebook --no-browser --ip "\$IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
 
 # wait until jupyternotebook has started, poll every $JNB_WAITING_INTERVAL seconds to check if /cluster/home/$JNB_USERNAME/jupyternbinfo exists
