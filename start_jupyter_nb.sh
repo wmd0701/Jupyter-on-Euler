@@ -258,7 +258,7 @@ fi
 
 # check if NUMGPU is <= 8
 if [ "$JNB_NUM_GPU" -gt "8" ]; then
-        echo -e "No distributed memory supported, therefore number of GPUs needs to be smaller or equal to 8\n"
+        echo -e "Error: No distributed memory supported, therefore number of GPUs needs to be smaller or equal to 8\n"
         display_help
 fi
 
@@ -270,7 +270,7 @@ else
 fi
 
 if [ ! "$JNB_NUM_CPU" -gt "0" -a ! "$JNB_NUM_GPU" -gt "0" ]; then
-        echo -e "No CPU and no GPU resources requested, terminating script"
+        echo -e "Error: No CPU and no GPU resources requested, terminating script"
         display_help
 fi
 
