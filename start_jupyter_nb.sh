@@ -304,8 +304,13 @@ case $JNB_SOFTWARE_STACK in
         echo -e "Using old software stack (new gcc/4.8.2 r/3.6.0 python/3.6.1 eth_proxy)"
         ;;
         new)
-        JNB_MODULE_COMMAND="gcc/6.3.0 python/3.8.5 eth_proxy"
-        echo -e "Using new software stack (gcc/6.3.0 python/3.8.5 eth_proxy)"
+        if [ "$JNB_NUM_GPU" -gt "0" ]; then
+            JNB_MODULE_COMMAND="gcc/6.3.0 python_gpu/3.8.5 eth_proxy"
+            echo -e "Using new software stack (gcc/6.3.0 python_gpu/3.8.5 eth_proxy)"
+        else
+            JNB_MODULE_COMMAND="gcc/6.3.0 python/3.8.5 eth_proxy"
+            echo -e "Using new software stack (gcc/6.3.0 python/3.8.5 eth_proxy)"
+        fi  
         ;;
         *)
         echo -e "Error: $JNB_SOFTWARE_STACK -> Unknown software stack. Software stack either needs to be set to 'new' or 'old'\n"
