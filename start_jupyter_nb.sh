@@ -368,7 +368,7 @@ ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_P
 module load $JNB_MODULE_COMMAND
 export XDG_RUNTIME_DIR=
 IP_REMOTE="\$(hostname -i)"
-echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$USERNAME/jnbip
+echo "Remote IP:\$IP_REMOTE" >> /cluster/home/$JNB_USERNAME/jnbip
 jupyter notebook --no-browser --ip "\$IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
 
