@@ -371,7 +371,7 @@ echo -e "Connecting to $JNB_HOSTNAME to start jupyter notebook in a batch job"
 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
 export XDG_RUNTIME_DIR=
-JNP_IP_REMOTE="\$(hostname -i)"
+JNB_IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$JNB_IP_REMOTE" >> /cluster/home/$JNB_USERNAME/jnbip
 jupyter notebook --no-browser --ip "\$JNB_IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
