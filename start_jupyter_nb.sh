@@ -191,7 +191,7 @@ do
                 shift
                 shift
                 ;;
-                -s|--softstack)
+                -s|--softwarestack)
                 JNB_SOFTWARE_STACK=$2
                 shift
                 shift
