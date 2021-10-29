@@ -9,7 +9,7 @@ The script assumes that you have setup SSH keys for passwordless access to the c
 
 https://scicomp.ethz.ch/wiki/Accessing_the_clusters#SSH_keys
 
-Currently the script runs on Linux and Mac OS X. Windows is not fully supported yet as the script is written in bash and uses a Python command (even though some cluster users could manage to make the script run under Windows WSL/WSL2). When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
+Currently the script runs on Linux, Mac OS X and Windows (using WSL/WSL2 or git bash). When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
 
 CentOS:
 
@@ -23,7 +23,17 @@ Ubuntu:
 apt-get install xdg-utils
 ```
 
-Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
+In the current version, there is a single usage of Python for detecting a free port on the local computer, using
+
+```
+JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
+```
+
+if you don't have a usable Python version installed on your computer, then please comment out this line in the script and un-comment the third line after it, which is providing a solution not depending on Python:
+
+```
+JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
+```
 
 ## Security token vs. password setup
 Please note that a part of the script (parsing of the ports) requires that you use jupyter notebooks with the security tokens. If you configure a password instead, such that you can use the jupyter notebook without the security token, then the script will not work anymore (it cannot parse the port on the remote compute node) without adapting it.
@@ -37,6 +47,8 @@ $HOME/.ssh/id_ed25519_euler
 You can either use the -k option of the script to specify the location of the SSH key, or even better use an SSH config file with the IdentityFile option
 
 https://scicomp.ethz.ch/wiki/Accessing_the_clusters#How_to_use_keys_with_non-default_names
+
+I would recommend to use the SSH config file as this works more reliably.
 
 ## Usage
 
