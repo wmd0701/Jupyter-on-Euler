@@ -4,9 +4,9 @@
 #                                                                             #
 #  Script to start a jupyter notebook on Euler from a local computer          #
 #                                                                             #
-#  Main author    : Samuel Fux, Dec. 2018                                     #
-#  Contributions  : Andrei Plamada, Urban Borsnik, Steven Armstrong,          #
-#                   Jarunan Panyasantisuk, Swen Vermeul                       #
+#  Main author    : Samuel Fux                                                #
+#  Contributions  : Jarunan Panyasantisuk, Andrei Plamada, Swen Vermeul,      #
+#                   Urban Borsnik, Steven Armstrong, Henry Lütcke             #
 #  Date           : December 2018                                             #
 #  Location       : ETH Zurich                                                #
 #  Version        : 1.0                                                       #
@@ -21,8 +21,7 @@
 #                * added choice for software stack (old/new)                  #
 #                * added more bsub options                                    #
 #                                                                             #
-#  23.07.2021    Added partial support for windows 10 with git-bash (thank    #
-#                you Henry Lütcke for the input)                              #
+#  23.07.2021    Added partial support for windows 10 with git-bash           #
 #                                                                             #
 #  17.08.2020    Added a section with configuration options to specify        #
 #                non-standard locations for keys                              #
