@@ -100,6 +100,7 @@ Optional arguments:
 -s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
 -v | --version                         Display version of the script and exit
 -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook
+-e | --environment    ENV              Use Python virtual environment
 
 Examlples:
 
@@ -120,7 +121,7 @@ JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster a
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR="$HOME"     # Working directory for the jupyter notebook
-
+JNB_ENV=""                  # Path to virtual environment
 ```
 
 ### Reconnect to a Jupyter notebook
@@ -182,6 +183,15 @@ Then follow the instructions provided on our wiki:
 https://scicomp.ethz.ch/wiki/R#Extensions
 ```
 
+### Running with a Python Virtual Environment
+
+You can create your own [virtual environment](https://scicomp.ethz.ch/wiki/Python_virtual_environment) in the cluster and run your jupyter notebook with that environment. Please make sure that the Python version used to create your virtual environment is compatible with the one used in the jupyter script. 
+
+```
+./start_jupyter_nb.sh -u sfux -n 4 -W 04:00 -m 2048 -w /cluster/scratch/sfux -e sample_env
+```
+
+
 ## Main author
 * Samuel Fux
 
@@ -191,3 +201,4 @@ https://scicomp.ethz.ch/wiki/R#Extensions
 * Steven Armstrong
 * Swen Vermeul
 * Jarunan Panyasantisuk
+* Gül Sena Altıntaş

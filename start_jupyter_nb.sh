@@ -6,11 +6,14 @@
 #                                                                             #
 #  Main author    : Samuel Fux                                                #
 #  Contributions  : Jarunan Panyasantisuk, Andrei Plamada, Swen Vermeul,      #
-#                   Urban Borsnik, Steven Armstrong, Henry Lütcke             #
+#                   Urban Borsnik, Steven Armstrong, Henry Lütcke,            #
+#                   Gül Sena Altıntaş                                         #
 #  Date           : December 2018                                             #
 #  Location       : ETH Zurich                                                #
 #  Version        : 1.0                                                       #
 #  Change history :                                                           #
+#                                                                             #
+#  02.11.2021    Added virtual environment support                            #
 #                                                                             #
 #  26.10.2021    The script was rewritten:                                    #
 #                * clean up of the code (naming scheme for variables)         #
@@ -84,6 +87,9 @@ JNB_SOFTWARE_STACK="new"
 # Workdir default               : no default
 JNB_WORKING_DIR=""
 
+# Virtual env default           : no default
+JNB_ENV=""
+
 ###############################################################################
 # Usage instructions                                                          #
 ###############################################################################
@@ -104,6 +110,7 @@ Options:
 Optional arguments:
 
         -c | --config         CONFIG_FILE      Configuration file for specifying options
+        -e | --environment    ENV              Python virtual environment
         -g | --numgpu         NUM_GPU          Number of GPUs to be used on the cluster
         -h | --help                            Display help for this script and quit
         -i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
@@ -130,7 +137,8 @@ JNB_MEM_PER_CPU_CORE=1024   # Memory limit in MB per core
 JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
-JNB_WORKING_DIR="$HOME"     # Working directory for the jupyter notebook
+JNB_WORKING_DIR=""          # Working directory for the jupyter notebook
+JNB_ENV=""                  # Path to virtual environment
 
 EOF
 exit 1
@@ -172,6 +180,11 @@ do
                 ;;
                 -c|--config)
                 JNB_CONFIG_FILE=$2
+                shift
+                shift
+                ;;
+                -e |--environment)
+                JNB_ENV=$2
                 shift
                 shift
                 ;;
@@ -333,6 +346,11 @@ else
         echo -e "Using $JNB_WORKING_DIR as working directory"
 fi
 
+# check if JNB_ENV is empty
+if [ "$JNB_ENV" != "" ]; then
+    echo "Using $JNB_ENV as python environment"
+fi
+
 # put together string for SSH options
 JNB_SSH_OPT="$JNB_SKPATH $JNB_USERNAME@$JNB_HOSTNAME"
 
@@ -370,6 +388,7 @@ echo -e "Connecting to $JNB_HOSTNAME to start jupyter notebook in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
+if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV/bin/activate; fi
 export XDG_RUNTIME_DIR=
 JNB_IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$JNB_IP_REMOTE" >> /cluster/home/$JNB_USERNAME/jnbip
