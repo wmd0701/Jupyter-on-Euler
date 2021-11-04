@@ -2,16 +2,18 @@
 
 ###############################################################################
 #                                                                             #
-#  Script to start a jupyter notebook on Euler from a local computer          #
+#  Script to start a jupyter notebook/lab on Euler from a local computer      #
 #                                                                             #
 #  Main author    : Samuel Fux                                                #
 #  Contributions  : Jarunan Panyasantisuk, Andrei Plamada, Swen Vermeul,      #
 #                   Urban Borsnik, Steven Armstrong, Henry Lütcke,            #
-#                   Gül Sena Altıntaş                                         #
+#                   Gül Sena Altıntaş, Mikolaj Rybinski                       #
 #  Date           : December 2018                                             #
 #  Location       : ETH Zurich                                                #
 #  Version        : 1.0                                                       #
 #  Change history :                                                           #
+#                                                                             #
+#  04.11.2021    Added support for Jupyter lab                                # 
 #                                                                             #
 #  02.11.2021    Added virtual environment support                            #
 #                                                                             #
@@ -44,7 +46,7 @@
 ###############################################################################
 
 # Version
-JNB_VERSION="1.0"
+JNB_VERSION="1.1"
 
 # Script directory
 JNB_SCRIPTDIR=$(pwd)
@@ -90,13 +92,16 @@ JNB_WORKING_DIR=""
 # Virtual env default           : no default
 JNB_ENV=""
 
+# jupyter lab default           : empty string (will start a notebook instead of lab)
+JNB_JLAB=""
+
 ###############################################################################
 # Usage instructions                                                          #
 ###############################################################################
 
 function display_help {
 cat <<-EOF
-$0: Script to start a jupyter notebook on Euler from a local computer
+$0: Script to start jupyter notebook/lab on Euler from a local computer
 
 Usage: start_jupyter_nb.sh [options]
 
@@ -104,7 +109,7 @@ Options:
 
         -u | --username       USERNAME         ETH username for SSH connection to Euler
         -n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
-        -W | --runtime        RUN_TIME         Run time limit for the jupyter notebook in hours and minutes HH:MM
+        -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
         -m | --memory         MEM_PER_CORE     Memory limit in MB per core
 
 Optional arguments:
@@ -115,9 +120,10 @@ Optional arguments:
         -h | --help                            Display help for this script and quit
         -i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
         -k | --key            SSH_KEY_PATH     Path to SSH key with non-standard name
+        -l | --lab                             Start jupyter lab instead of a jupyter notebook
         -s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
         -v | --version                         Display version of the script and exit
-        -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook
+        -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
 
 Examlples:
 
@@ -132,13 +138,14 @@ Format of configuration file:
 JNB_USERNAME=""             # ETH username for SSH connection to Euler
 JNB_NUM_CPU=1               # Number of CPU cores to be used on the cluster
 JNB_NUM_GPU=0               # Number of GPUs to be used on the cluster
-JNB_RUN_TIME="01:00"        # Run time limit for the jupyter notebook in hours and minutes HH:MM
+JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours and minutes HH:MM
 JNB_MEM_PER_CPU_CORE=1024   # Memory limit in MB per core
 JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
-JNB_WORKING_DIR=""          # Working directory for the jupyter notebook
+JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
+JNB_JLAB=""                 # "lab" -> start jupyter lab; "" -> start jupyter notebook
 
 EOF
 exit 1
@@ -203,6 +210,10 @@ do
                 shift
                 shift
                 ;;
+                -l|--lab)
+                JNB_JLAB="lab"
+                shift
+                ;;
                 -s|--softwarestack)
                 JNB_SOFTWARE_STACK=$2
                 shift
@@ -233,12 +244,19 @@ if [ -f "$JNB_CONFIG_FILE" ]; then
 fi
 
 # check that JNB_USERNAME is not an empty string
-if [ -z "$JNB_USERNAME" ]
-then
+if [ -z "$JNB_USERNAME" ]; then
         echo -e "Error: No ETH username is specified, terminating script\n"
         display_help
 else
         echo -e "ETH username: $JNB_USERNAME"
+fi
+
+# check if JNB_JLAB is empty
+if [ "$JNB_JLAB" == "lab"]; then
+        JNB_START_OPTION="lab"
+        echo -e "Using jupyter lab instead of jupyter notebook"
+else
+        JNB_START_OPTION="notebook"
 fi
 
 # check number of CPU cores
@@ -256,7 +274,7 @@ if [ "$JNB_NUM_CPU" -gt "128" ]; then
 fi
 
 if [ "$JNB_NUM_CPU" -gt "0" ]; then
-        echo -e "Requesting $JNB_NUM_CPU CPU cores for running the jupyter notebook"
+        echo -e "Requesting $JNB_NUM_CPU CPU cores for running the jupyter $JNB_START_OPTION"
 fi
 
 # check number of GPUs
@@ -274,7 +292,7 @@ if [ "$JNB_NUM_GPU" -gt "8" ]; then
 fi
 
 if [ "$JNB_NUM_GPU" -gt "0" ]; then
-        echo -e "Requesting $JNB_NUM_GPU GPUs for running the jupyter notebook"
+        echo -e "Requesting $JNB_NUM_GPU GPUs for running the jupyter $JNB_START_OPTION"
         JNB_SNUM_GPU="-R \"rusage[ngpus_excl_p=$JNB_NUM_GPU]\""
 else
         JNB_SNUM_GPU=""
@@ -348,7 +366,7 @@ fi
 
 # check if JNB_ENV is empty
 if [ "$JNB_ENV" != "" ]; then
-    echo "Using $JNB_ENV as python environment"
+        echo "Using $JNB_ENV as python environment"
 fi
 
 # put together string for SSH options
@@ -380,11 +398,11 @@ fi
 ENDSSH
 
 ###############################################################################
-# Start jupyter notebook on the cluster                                       #
+# Start jupyter notebook/lab on the cluster                                   #
 ###############################################################################
 
-# run the jupyter notebook job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
-echo -e "Connecting to $JNB_HOSTNAME to start jupyter notebook in a batch job"
+# run the jupyter notebook/lab job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
+echo -e "Connecting to $JNB_HOSTNAME to start jupyter $JNB_START_OPTION in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
@@ -392,20 +410,20 @@ if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV
 export XDG_RUNTIME_DIR=
 JNB_IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$JNB_IP_REMOTE" >> /cluster/home/$JNB_USERNAME/jnbip
-jupyter notebook --no-browser --ip "\$JNB_IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
+jupyter $JNB_START_OPTION --no-browser --ip "\$JNB_IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
 
-# wait until jupyternotebook has started, poll every $JNB_WAITING_INTERVAL seconds to check if /cluster/home/$JNB_USERNAME/jnbinfo exists
-# once the file exists and is not empty, the notebook has been startet and is listening
+# wait until jupyter notebook/lab has started, poll every $JNB_WAITING_INTERVAL seconds to check if /cluster/home/$JNB_USERNAME/jnbinfo exists
+# once the file exists and is not empty, the notebook/lab has been startet and is listening
 ssh $JNB_SSH_OPT <<ENDSSH
 while ! [ -e /cluster/home/$JNB_USERNAME/jnbinfo -a -s /cluster/home/$JNB_USERNAME/jnbinfo ]; do
-        echo 'Waiting for jupyter notebook to start, sleep for $JNB_WAITING_INTERVAL sec'
+        echo 'Waiting for jupyter $JNB_START_OPTION to start, sleep for $JNB_WAITING_INTERVAL sec'
         sleep $JNB_WAITING_INTERVAL
 done
 ENDSSH
 
 # get remote ip, port and token from files stored on Euler
-echo -e "Receiving ip, port and token from jupyter notebook"
+echo -e "Receiving ip, port and token from jupyter $JNB_START_OPTION"
 JNB_REMOTE_IP=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
 JNB_REMOTE_PORT=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
 JNB_TOKEN=$(ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
@@ -431,7 +449,7 @@ fi
 
 if  [[ "$JNB_TOKEN" == "" ]]; then
 cat <<EOF
-Error: token for the jupyter notebook session is not defined. Terminating script.
+Error: token for the jupyter $JNB_START_OPTION session is not defined. Terminating script.
 * Please check login to the cluster and check with bjobs if the batch job on the cluster is running and terminate it with bkill.
 * Please check the /cluster/home/$JNB_USERNAME/jnbinfo for logs regarding the failure to identify the remote ip on the cluster
 EOF
@@ -453,9 +471,17 @@ JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
 
 echo -e "Using local port: $JNB_LOCAL_PORT"
 
+# put together URL
+if [ "$JNB_START_OPTION" == "notebook" ]; then
+        JNB_URL=http://localhost:$JNB_LOCAL_PORT/?token=$JNB_TOKEN
+else
+        JNB_URL=http://localhost:$JNB_LOCAL_PORT/lab?token=$JNB_TOKEN
+fi
+
 # write reconnect_info file
 cat <<EOF > $JNB_SCRIPTDIR/reconnect_info
 Restart file
+Username          : $JNB_USERNAME
 Remote IP address : $JNB_REMOTE_IP
 Remote port       : $JNB_REMOTE_PORT
 Local port        : $JNB_LOCAL_PORT
@@ -466,15 +492,13 @@ EOF
 
 # setup SSH tunnel from local computer to compute node via login node
 # FIXME: check if the tunnel can be managed via this script (opening, closing) by using a control socket from SSH
-echo -e "Setting up SSH tunnel for connecting the browser to the jupyter notebook"
+echo -e "Setting up SSH tunnel for connecting the browser to the jupyter $JNB_START_OPTION"
 ssh $JNB_SSH_OPT -L $JNB_LOCAL_PORT:$JNB_REMOTE_IP:$JNB_REMOTE_PORT -N &
 
 # SSH tunnel is started in the background, pause 5 seconds to make sure
 # it is established before starting the browser
 sleep 5
 
-# save url in variable
-JNB_URL=http://localhost:$JNB_LOCAL_PORT/?token=$JNB_TOKEN
 echo -e "Starting browser and connecting it to jupyter notebook"
 echo -e "Connecting to url $JNB_URL"
 
