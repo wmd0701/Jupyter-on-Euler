@@ -252,7 +252,7 @@ else
 fi
 
 # check if JNB_JLAB is empty
-if [ "$JNB_JLAB" == "lab"]; then
+if [ "$JNB_JLAB" == "lab" ]; then
         JNB_START_OPTION="lab"
         echo -e "Using jupyter lab instead of jupyter notebook"
 else
