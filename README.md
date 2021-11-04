@@ -79,49 +79,50 @@ The start_jupyer_nb.sh script needs to be executed on your local computer. Pleas
 
 ```
 $ ./start_jupyter_nb.sh -h
-./start_jupyter_nb.sh: Script to start a jupyter notebook on Euler from a local computer
-
+./start_jupyter_nb.sh: Script to start jupyter notebook/lab on Euler from a local computer
 Usage: start_jupyter_nb.sh [options]
 
 Options:
 
--u | --username       USERNAME         ETH username for SSH connection to Euler
--n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
--W | --runtime        RUN_TIME         Run time limit for the jupyter notebook in hours and minutes HH:MM
--m | --memory         MEM_PER_CORE     Memory limit in MB per core
+        -u | --username       USERNAME         ETH username for SSH connection to Euler
+        -n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
+        -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
+        -m | --memory         MEM_PER_CORE     Memory limit in MB per core
 
 Optional arguments:
 
--c | --config         CONFIG_FILE      Configuration file for specifying options
--g | --numgpu         NUM_GPU          Number of GPUs to be used on the cluster
--h | --help                            Display help for this script and quit
--i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
--k | --key            SSH_KEY_PATH     Path to SSH key with non-standard name
--s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
--v | --version                         Display version of the script and exit
--w | --workdir        WORKING_DIR      Working directory for the jupyter notebook
--e | --environment    ENV              Use Python virtual environment
+        -c | --config         CONFIG_FILE      Configuration file for specifying options
+        -e | --environment    ENV              Python virtual environment
+        -g | --numgpu         NUM_GPU          Number of GPUs to be used on the cluster
+        -h | --help                            Display help for this script and quit
+        -i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
+        -k | --key            SSH_KEY_PATH     Path to SSH key with non-standard name
+        -l | --lab                             Start jupyter lab instead of a jupyter notebook
+        -s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
+        -v | --version                         Display version of the script and exit
+        -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
 
 Examlples:
 
-./start_jupyter_nb.sh -u sfux -n 4 -W 04:00 -m 2048 -w /cluster/scratch/sfux
+        ./start_jupyter_nb.sh -u sfux -n 4 -W 04:00 -m 2048 -w /cluster/scratch/sfux
 
         ./start_jupyter_nb.sh --username sfux --numcores 2 --runtime 01:30 --memory 2048 --softwarestack new
 
-        ./start_jupyter_nb.sh -c /cluster/home/sfux/.jnb_config
+        ./start_jupyter_nb.sh -c $HOME/.jnb_config
 
 Format of configuration file:
 
 JNB_USERNAME=""             # ETH username for SSH connection to Euler
 JNB_NUM_CPU=1               # Number of CPU cores to be used on the cluster
 JNB_NUM_GPU=0               # Number of GPUs to be used on the cluster
-JNB_RUN_TIME="01:00"        # Run time limit for the jupyter notebook in hours and minutes HH:MM
+JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours and minutes HH:MM
 JNB_MEM_PER_CPU_CORE=1024   # Memory limit in MB per core
 JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
-JNB_WORKING_DIR="$HOME"     # Working directory for the jupyter notebook
+JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
+JNB_JLAB=""                 # "lab" -> start jupyter lab; "" -> start jupyter notebook
 ```
 
 ### Reconnect to a Jupyter notebook
@@ -202,3 +203,4 @@ You can create your own [virtual environment](https://scicomp.ethz.ch/wiki/Pytho
 * Swen Vermeul
 * Jarunan Panyasantisuk
 * Gül Sena Altıntaş
+* Mikolaj Rybinski
