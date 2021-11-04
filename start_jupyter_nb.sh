@@ -445,10 +445,10 @@ echo -e "Jupyter token: $JNB_TOKEN"
 
 # get a free port on local computer
 echo -e "Determining free port on local computer"
-JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
+# JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
 # FIXME: check if there is a solution that does not require python (as some Windows computers don't have a usable Python installed by default)
 # if python is not available, one could use
-# JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
+JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
 # as a replacement. No guarantee that the port is unused, but so far best non-Python solution
 
 echo -e "Using local port: $JNB_LOCAL_PORT"
