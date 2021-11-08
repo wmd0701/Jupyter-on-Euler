@@ -61,7 +61,7 @@ cd Jupyter-on-Euler-or-Leonhard-Open/
 chmod 755 start_jupyter_nb.sh
 ```
 
-###Software stack
+### Software stack
 Please note that currently the old software stack is still set a default (this will change). The script is using the new software stack (unless you explicitly request the old software stack with the option -s old (or --softwarestack old). Therefore please make sure that you set the new software stack as permanent default by using the command
 
 ```
