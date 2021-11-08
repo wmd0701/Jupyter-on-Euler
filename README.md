@@ -1,7 +1,7 @@
-# Jupyter on Euler or Leonhard Open
-This project aims to help beginner users to run simple jupyter notebooks on our HPC clusters Euler and Leonhard. It is not addressing advanced users that need a wide range of additional features going beyond simple jupyter notebooks. There will soon be an new section added, providing hints for advanced users on how to run jupyer notebooks without this script.
+# Jupyter on Euler
+This project aims to help beginner users to run simple jupyter notebooks on our HPC cluster Euler. It is not addressing advanced users that need a wide range of additional features going beyond simple jupyter notebooks.
 
-When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler/Leonhard Open (depending on which cluster you choose) and connects your local browser with it.
+When you run this shell script on your local computer, then it starts a Jupyter notebook in a batch job on Euler and connects your local browser with it.
 
 ## Requirements
 
@@ -9,19 +9,7 @@ The script assumes that you have setup SSH keys for passwordless access to the c
 
 https://scicomp.ethz.ch/wiki/Accessing_the_clusters#SSH_keys
 
-Please note that the example on the wiki refers to the Euler cluster and for Leonhard Open, then hostname needs to be changed from
-
-```
-euler.ethz.ch
-```
-
-to
-
-```
-login.leonhard.ethz.ch
-```
-
-Currently the script runs on Linux and Mac OS X. Windows is not supported as the script is written in bash and uses a Python command (even though some cluster users could manage to make the script run under Windows WSL). When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
+Currently the script runs on Linux, Mac OS X and Windows (using WSL/WSL2 or git bash). When using a Linux computer, please make sure that xdg-open is installed. This package is used to automatically start your default browser. You can install it with the command
 
 CentOS:
 
@@ -35,38 +23,32 @@ Ubuntu:
 apt-get install xdg-utils
 ```
 
-Further more, the script requires that there is a Python installation available, which is usually included in the Linux distribution or Mac OS.
+In the current version, there is a single usage of Python for detecting a free port on the local computer, using
+
+```
+JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
+```
+
+if you don't have a usable Python version installed on your computer, then please comment out this line in the script and un-comment the third line after it, which is providing a solution not depending on Python:
+
+```
+JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
+```
 
 ## Security token vs. password setup
 Please note that a part of the script (parsing of the ports) requires that you use jupyter notebooks with the security tokens. If you configure a password instead, such that you can use the jupyter notebook without the security token, then the script will not work anymore (it cannot parse the port on the remote compute node) without adapting it.
 
 ## Using SSH keys with non-default names
-Since the reopening of Euler and Leonhard Open after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys. We recommend to use different keys for Euler and Leonhard Open, with according names
-
+Since the reopening of Euler after the cyber attack in May 2020, we recommend to the cluster users to use SSH keys.
 ```
 $HOME/.ssh/id_ed25519_euler
-$HOME/.ssh/id_ed25519_leonhard
 ```
 
-In order to use those keys with the jupyter script, you would need to edit the following section at the beginning of the script and add the path to your SSH keys. In the example below we show how this would look like for Euler:
+You can either use the -k option of the script to specify the location of the SSH key, or even better use an SSH config file with the IdentityFile option
 
-```
-#########################
-# Configuration options #
-#########################
+https://scicomp.ethz.ch/wiki/Accessing_the_clusters#How_to_use_keys_with_non-default_names
 
-# SSH key location is the path to your SSH key. Please specify the path if you are using a non-standard name for your SSH key
-SSH_KEY_LOCATION="$HOME/.ssh/id_ed25519_euler" 
-
-# Waiting time interval after starting the jupyter notebook. Check every $WAITING_TIME_INTERVAL seconds if the job already started
-WAITING_TIME_INTERVAL=60
-
-#############################
-# End configuration options #
-#############################
-```
-
-This is required to use SSH keys with non-default names.
+I would recommend to use the SSH config file as this works more reliably.
 
 ## Usage
 
@@ -93,41 +75,55 @@ chmod 755 start_jupyter_nb.sh
 
 ### Run Jupyter in a batch job
 
-The start_jupyer_nb.sh script needs to be executed on your local computer:
+The start_jupyer_nb.sh script needs to be executed on your local computer. Please find below the list of options that can be used with the script:
 
 ```
-./start_jupyter_nb.sh CLUSTER NETHZ_USERNAME NUM_CORES RUN_TIME MEM_PER_CORE
+$ ./start_jupyter_nb.sh -h
+./start_jupyter_nb.sh: Script to start jupyter notebook/lab on Euler from a local computer
+Usage: start_jupyter_nb.sh [options]
+
+Options:
+
+        -u | --username       USERNAME         ETH username for SSH connection to Euler
+        -n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
+        -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
+        -m | --memory         MEM_PER_CORE     Memory limit in MB per core
+
+Optional arguments:
+
+        -c | --config         CONFIG_FILE      Configuration file for specifying options
+        -e | --environment    ENV              Python virtual environment
+        -g | --numgpu         NUM_GPU          Number of GPUs to be used on the cluster
+        -h | --help                            Display help for this script and quit
+        -i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
+        -k | --key            SSH_KEY_PATH     Path to SSH key with non-standard name
+        -l | --lab                             Start jupyter lab instead of a jupyter notebook
+        -s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
+        -v | --version                         Display version of the script and exit
+        -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
+
+Examlples:
+
+        ./start_jupyter_nb.sh -u sfux -n 4 -W 04:00 -m 2048 -w /cluster/scratch/sfux
+
+        ./start_jupyter_nb.sh --username sfux --numcores 2 --runtime 01:30 --memory 2048 --softwarestack new
+
+        ./start_jupyter_nb.sh -c $HOME/.jnb_config
+
+Format of configuration file:
+
+JNB_USERNAME=""             # ETH username for SSH connection to Euler
+JNB_NUM_CPU=1               # Number of CPU cores to be used on the cluster
+JNB_NUM_GPU=0               # Number of GPUs to be used on the cluster
+JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours and minutes HH:MM
+JNB_MEM_PER_CPU_CORE=1024   # Memory limit in MB per core
+JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
+JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
+JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
+JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
+JNB_ENV=""                  # Path to virtual environment
+JNB_JLAB=""                 # "lab" -> start jupyter lab; "" -> start jupyter notebook
 ```
-
-
-| Argument       | Description |
-|----------------|---------------------------------------------------------|
-| CLUSTER        | Name of the cluster (Euler or LeoOpen) |
-| NETHZ_USERNAME | NETHZ username for which the notebook should be started | 
-| NUM_CORES      | Number of cores to be used on the cluster (maximum: 36) | 
-| RUN_TIME       | Run time limit for the jupyter notebook on the cluster (HH:MM) |  
-| MEM_PER_CORE   | Memory limit in MB per core |
-
-Example:
-
-```
-./start_jupyter_nb.sh Euler sfux 4 01:20 2048
-```
-
-### Starting in a different location than your home directory
-By default, the Jupyter notebook will start in your home directory. It is also possible to start in a different location. For this you would need to change line 122 in the script from
-
-```
-jupyter notebook --no-browser --ip "\$IP_REMOTE" &> /cluster/home/$USERNAME/jnbinf
-```
-
-to
-
-```
-jupyter notebook --no-browser --ip "\$IP_REMOTE" --notebook-dir PATH &> /cluster/home/$USERNAME/jnbinf
-```
-
-where PATH needs to be replaced with the path in which the Jupyter notebook should start.
 
 ### Reconnect to a Jupyter notebook
 When running the script, it creates a local file called reconnect_info in the installation directory, which contains all information regarding the used ports, the remote ip address, the command for the SSH tunnel and the URL for the browser. This information should be sufficient to reconnect to a Jupyter notebook if connection was lost.
@@ -158,8 +154,8 @@ When using this script, you can either use the Python 3.6 Kernel, or in addition
 When starting a Jupyter notebook with this script, then it will use a central Python and R installation:
 
 ```
-Euler: python/3.6.1, r/3.6.0
-Leonhard Open: python_cpu/3.6.4, r/3.5.1
+Old software stack: module load new gcc/4.8.2 python/3.6.1
+New software stack: module load gcc/6.3.0 python/3.8.5
 ```
 
 Therefore you can only use packages that are centrally installed out-of-the-box. But you have the option to install additional packages locally in your home directory, which can afterwards be used.
@@ -188,11 +184,23 @@ Then follow the instructions provided on our wiki:
 https://scicomp.ethz.ch/wiki/R#Extensions
 ```
 
-## Authors
+### Running with a Python Virtual Environment
+
+You can create your own [virtual environment](https://scicomp.ethz.ch/wiki/Python_virtual_environment) in the cluster and run your jupyter notebook with that environment. Please make sure that the Python version used to create your virtual environment is compatible with the one used in the jupyter script. 
+
+```
+./start_jupyter_nb.sh -u sfux -n 4 -W 04:00 -m 2048 -w /cluster/scratch/sfux -e sample_env
+```
+
+
+## Main author
 * Samuel Fux
-* Andrei Plamada
 
 ## Contributions
+* Andrei Plamada
 * Urban Borstnik
 * Steven Armstrong
 * Swen Vermeul
+* Jarunan Panyasantisuk
+* Gül Sena Altıntaş
+* Mikolaj Rybinski
