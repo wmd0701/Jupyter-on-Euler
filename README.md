@@ -23,18 +23,6 @@ Ubuntu:
 apt-get install xdg-utils
 ```
 
-In the current version, there is a single usage of Python for detecting a free port on the local computer, using
-
-```
-JNB_LOCAL_PORT=$(python -c 'import socket; s=socket.socket(); s.bind(("",0)); print(s.getsockname()[1]); s.close()')
-```
-
-if you don't have a usable Python version installed on your computer, then please comment out this line in the script and un-comment the third line after it, which is providing a solution not depending on Python:
-
-```
-JNB_LOCAL_PORT=$((3 * 2**14 + RANDOM % 2**14))
-```
-
 ## Security token vs. password setup
 Please note that a part of the script (parsing of the ports) requires that you use jupyter notebooks with the security tokens. If you configure a password instead, such that you can use the jupyter notebook without the security token, then the script will not work anymore (it cannot parse the port on the remote compute node) without adapting it.
 
