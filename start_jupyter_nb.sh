@@ -410,6 +410,8 @@ if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV
 export XDG_RUNTIME_DIR=
 JNB_IP_REMOTE="\$(hostname -i)"
 echo "Remote IP:\$JNB_IP_REMOTE" >> /cluster/home/$JNB_USERNAME/jnbip
+export JNB_RUN_TIME=$JNB_RUN_TIME
+export JNB_START_TIME=`date +"%Y-%m-%dT%H:%M:%S%z"`
 jupyter $JNB_START_OPTION --no-browser --ip "\$JNB_IP_REMOTE" $JNB_SWORK_DIR &> /cluster/home/$JNB_USERNAME/jnbinfo
 ENDBSUB
 
