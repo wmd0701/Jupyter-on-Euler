@@ -105,12 +105,9 @@ $0: Script to start jupyter notebook/lab on Euler from a local computer
 
 Usage: start_jupyter_nb.sh [options]
 
-Options:
+Required options:
 
         -u | --username       USERNAME         ETH username for SSH connection to Euler
-        -n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
-        -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
-        -m | --memory         MEM_PER_CORE     Memory limit in MB per core
 
 Optional arguments:
 
@@ -121,9 +118,12 @@ Optional arguments:
         -i | --interval       INTERVAL         Time interval for checking if the job on the cluster already started
         -k | --key            SSH_KEY_PATH     Path to SSH key with non-standard name
         -l | --lab                             Start jupyter lab instead of a jupyter notebook
+        -m | --memory         MEM_PER_CORE     Memory limit in MB per core
+        -n | --numcores       NUM_CPU          Number of CPU cores to be used on the cluster
         -s | --softwarestack  SOFTWARE_STACK   Software stack to be used (old, new)
         -v | --version                         Display version of the script and exit
         -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
+        -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
 
 Examlples:
 
