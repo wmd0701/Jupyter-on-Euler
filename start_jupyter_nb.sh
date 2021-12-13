@@ -135,17 +135,17 @@ Examlples:
 
 Format of configuration file:
 
-JNB_USERNAME=""             # ETH username for SSH connection to Euler
-JNB_NUM_CPU=1               # Number of CPU cores to be used on the cluster
-JNB_NUM_GPU=0               # Number of GPUs to be used on the cluster
+JNB_USERNAME="menwang"      # ETH username for SSH connection to Euler
+JNB_NUM_CPU=4               # Number of CPU cores to be used on the cluster
+JNB_NUM_GPU=1               # Number of GPUs to be used on the cluster
 JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours and minutes HH:MM
-JNB_MEM_PER_CPU_CORE=1024   # Memory limit in MB per core
-JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
+JNB_MEM_PER_CPU_CORE=4096   # Memory limit in MB per core
+JNB_WAITING_INTERVAL=20     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
-JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
+JNB_SOFTWARE_STACK="none"   # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
-JNB_JLAB=""                 # "lab" -> start jupyter lab; "" -> start jupyter notebook
+JNB_JLAB="lab"              # "lab" -> start jupyter lab; "" -> start jupyter notebook
 
 EOF
 exit 1
@@ -407,7 +407,9 @@ ENDSSH
 # run the jupyter notebook/lab job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to $JNB_HOSTNAME to start jupyter $JNB_START_OPTION in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
-sshpass Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
+sshpass Wmd=5213217421 ssh $JNB_SSH_OPT
+conda activate 
+bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
 if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV/bin/activate; fi
 export XDG_RUNTIME_DIR=
