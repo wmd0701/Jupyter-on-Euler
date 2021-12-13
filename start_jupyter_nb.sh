@@ -72,7 +72,7 @@ JNB_NUM_CPU=4
 JNB_RUN_TIME="01:00"
 
 # Memory default                : 1024 MB per core
-JNB_MEM_PER_CPU_CORE=1024
+JNB_MEM_PER_CPU_CORE=4096
 
 # Number of GPUs default        : 0 GPUs
 JNB_NUM_GPU=1
@@ -390,7 +390,7 @@ if [ -f $JNB_SCRIPTDIR/reconnect_info ]; then
 fi
 
 # check for log files from a previous session in the home directory of the cluster
-sshpass Wmd=5213217421 ssh -T $JNB_SSH_OPT <<ENDSSH
+sshpass -p Wmd=5213217421 ssh -T $JNB_SSH_OPT <<ENDSSH
 if [ -f /cluster/home/$JNB_USERNAME/jnbinfo ]; then
         echo -e "Found old jnbinfo file, deleting it ..."
         rm /cluster/home/$JNB_USERNAME/jnbinfo
@@ -408,7 +408,7 @@ ENDSSH
 # run the jupyter notebook/lab job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to $JNB_HOSTNAME to start jupyter $JNB_START_OPTION in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
-sshpass Wmd=5213217421 ssh $JNB_SSH_OPT
+sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT
 conda activate 
 bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
@@ -423,7 +423,7 @@ ENDBSUB
 
 # wait until jupyter notebook/lab has started, poll every $JNB_WAITING_INTERVAL seconds to check if /cluster/home/$JNB_USERNAME/jnbinfo exists
 # once the file exists and is not empty, the notebook/lab has been startet and is listening
-sshpass Wmd=5213217421 ssh $JNB_SSH_OPT <<ENDSSH
+sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT <<ENDSSH
 while ! [ -e /cluster/home/$JNB_USERNAME/jnbinfo -a -s /cluster/home/$JNB_USERNAME/jnbinfo ]; do
         echo 'Waiting for jupyter $JNB_START_OPTION to start, sleep for $JNB_WAITING_INTERVAL sec'
         sleep $JNB_WAITING_INTERVAL
@@ -432,9 +432,9 @@ ENDSSH
 
 # get remote ip, port and token from files stored on Euler
 echo -e "Receiving ip, port and token from jupyter $JNB_START_OPTION"
-JNB_REMOTE_IP=$(sshpass Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
-JNB_REMOTE_PORT=$(sshpass Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
-JNB_TOKEN=$(sshpass Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
+JNB_REMOTE_IP=$(sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbip | grep -m1 'Remote IP' | cut -d ':' -f 2")
+JNB_REMOTE_PORT=$(sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '/' -f 3 | cut -d ':' -f 2")
+JNB_TOKEN=$(sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT "cat /cluster/home/$JNB_USERNAME/jnbinfo | grep -m1 token | cut -d '=' -f 2")
 
 # check if the IP, the port and the token are defined
 if  [[ "$JNB_REMOTE_IP" == "" ]]; then
@@ -494,14 +494,14 @@ Remote IP address : $JNB_REMOTE_IP
 Remote port       : $JNB_REMOTE_PORT
 Local port        : $JNB_LOCAL_PORT
 Jupyter token     : $JNB_TOKEN
-SSH tunnel        : sshpass Wmd=5213217421 ssh $JNB_SSH_OPT -L $JNB_LOCAL_PORT:$JNB_REMOTE_IP:$JNB_REMOTE_PORT -N &
+SSH tunnel        : sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT -L $JNB_LOCAL_PORT:$JNB_REMOTE_IP:$JNB_REMOTE_PORT -N &
 URL               : http://localhost:$JNB_LOCAL_PORT/?token=$JNB_TOKEN
 EOF
 
 # setup SSH tunnel from local computer to compute node via login node
 # FIXME: check if the tunnel can be managed via this script (opening, closing) by using a control socket from SSH
 echo -e "Setting up SSH tunnel for connecting the browser to the jupyter $JNB_START_OPTION"
-sshpass Wmd=5213217421 ssh $JNB_SSH_OPT -L $JNB_LOCAL_PORT:$JNB_REMOTE_IP:$JNB_REMOTE_PORT -N &
+sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT -L $JNB_LOCAL_PORT:$JNB_REMOTE_IP:$JNB_REMOTE_PORT -N &
 
 # SSH tunnel is started in the background, pause 5 seconds to make sure
 # it is established before starting the browser
