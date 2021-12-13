@@ -345,6 +345,7 @@ case $JNB_SOFTWARE_STACK in
         none)
         JNB_MODULE_COMMAND="eth_proxy"
         echo -e "Only using eth_proxy"
+        ;;
         *)
         echo -e "Error: $JNB_SOFTWARE_STACK -> Unknown software stack. Software stack either needs to be set to 'new' or 'old'\n"
         display_help
