@@ -77,6 +77,9 @@ JNB_MEM_PER_CPU_CORE=4096
 # Number of GPUs default        : 0 GPUs
 JNB_NUM_GPU=1
 
+# Memory GPU                    : default 4 GB GPU memory
+JNB_MEM_GPU=4096
+
 # Waiting interval default      : 60 seconds
 JNB_WAITING_INTERVAL=60
 
@@ -124,6 +127,7 @@ Optional arguments:
         -v | --version                         Display version of the script and exit
         -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
         -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
+        -G | --gpumem         MEM_GPU          GPU memory       
 
 Examlples:
 
@@ -146,6 +150,7 @@ JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
 JNB_JLAB="lab"              # "lab" -> start jupyter lab; "" -> start jupyter notebook
+JNB_MEM_GPU=4096            # GPU memory, by default 4 GB
 
 EOF
 exit 1
@@ -410,7 +415,7 @@ ENDSSH
 # run the jupyter notebook/lab job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to $JNB_HOSTNAME to start jupyter $JNB_START_OPTION in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
-sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
+sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" -R "select[gpu_mtotal0>=$JNB_MEM_GPU]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
 if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV/bin/activate; fi
 export XDG_RUNTIME_DIR=
