@@ -65,20 +65,20 @@ JNB_CONFIG_FILE="$HOME/.jnb_config"
 # Username default              : no default
 JNB_USERNAME="menwang"
 
-# Number of CPU cores default   : 1 CPU core
+# Number of CPU cores default   : 4 CPU cores
 JNB_NUM_CPU=4
 
 # Runtime limit default         : 1:00 hour
 JNB_RUN_TIME="01:00"
 
-# Memory default                : 1024 MB per core
+# Memory default                : 4096 MB per core
 JNB_MEM_PER_CPU_CORE=4096
 
 # Number of GPUs default        : 0 GPUs
 JNB_NUM_GPU=1
 
-# Memory GPU                    : default 4 GB GPU memory
-JNB_MEM_GPU=4096
+# Memory GPU                    : default 3 GB GPU memory
+JNB_MEM_GPU=3072
 
 # Waiting interval default      : 60 seconds
 JNB_WAITING_INTERVAL=60
@@ -127,7 +127,7 @@ Optional arguments:
         -v | --version                         Display version of the script and exit
         -w | --workdir        WORKING_DIR      Working directory for the jupyter notebook/lab
         -W | --runtime        RUN_TIME         Run time limit for jupyter notebook/lab in hours and minutes HH:MM
-        -G | --gpumem         MEM_GPU          GPU memory       
+        -G | --memgpu         MEM_GPU          GPU memory       
 
 Examlples:
 
@@ -150,7 +150,7 @@ JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
 JNB_JLAB="lab"              # "lab" -> start jupyter lab; "" -> start jupyter notebook
-JNB_MEM_GPU=4096            # GPU memory, by default 4 GB
+JNB_MEM_GPU=3072            # GPU memory, by default 3 GB
 
 EOF
 exit 1
@@ -182,6 +182,11 @@ do
                 ;;
                 -W|--runtime)
                 JNB_RUN_TIME=$2
+                shift
+                shift
+                ;;
+                -G|--memgpu
+                JNB_MEM_GPU=$2
                 shift
                 shift
                 ;;
@@ -322,6 +327,14 @@ if ! [[ "$JNB_MEM_PER_CPU_CORE" =~ ^[0-9]+$ ]]; then
         display_help
 else
     echo -e "Memory per core set to $JNB_MEM_PER_CPU_CORE MB"
+fi
+
+# check if JNB_MEM_GPU is an integer
+if ! [[ "$JNB_MEM_GPU" =~ ^[0-9]+$ ]]; then
+        echo -e "Error: $JNB_MEM_GPU -> GPU Memory limit must be an integer, please try again\n"
+        display_help
+else
+    echo -e "GPU memory lower limit set to $JNB_MEM_GPU MB"
 fi
 
 # check if JNB_WAITING_INTERVAL is an integer
