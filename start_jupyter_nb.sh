@@ -78,7 +78,7 @@ JNB_MEM_PER_CPU_CORE=4096
 JNB_NUM_GPU=1
 
 # Waiting interval default      : 60 seconds
-JNB_WAITING_INTERVAL=20
+JNB_WAITING_INTERVAL=60
 
 # SSH key location default      : no default
 JNB_SSH_KEY_PATH=""
@@ -140,7 +140,7 @@ JNB_NUM_CPU=4               # Number of CPU cores to be used on the cluster
 JNB_NUM_GPU=1               # Number of GPUs to be used on the cluster
 JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours and minutes HH:MM
 JNB_MEM_PER_CPU_CORE=4096   # Memory limit in MB per core
-JNB_WAITING_INTERVAL=20     # Time interval to check if the job on the cluster already started
+JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="none"   # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
