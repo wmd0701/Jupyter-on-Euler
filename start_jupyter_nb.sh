@@ -84,7 +84,7 @@ JNB_WAITING_INTERVAL=60
 JNB_SSH_KEY_PATH=""
 
 # Software stack default        : new
-JNB_SOFTWARE_STACK="none"
+JNB_SOFTWARE_STACK="new"
 
 # Workdir default               : no default
 JNB_WORKING_DIR=""
@@ -142,7 +142,7 @@ JNB_RUN_TIME="01:00"        # Run time limit for jupyter notebook/lab in hours a
 JNB_MEM_PER_CPU_CORE=4096   # Memory limit in MB per core
 JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster already started
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
-JNB_SOFTWARE_STACK="none"   # Software stack to be used (old, new)
+JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
 JNB_ENV=""                  # Path to virtual environment
 JNB_JLAB="lab"              # "lab" -> start jupyter lab; "" -> start jupyter notebook
@@ -335,8 +335,10 @@ case $JNB_SOFTWARE_STACK in
         ;;
         new)
         if [ "$JNB_NUM_GPU" -gt "0" ]; then
-            JNB_MODULE_COMMAND="gcc/6.3.0 python_gpu/3.8.5 eth_proxy"
-            echo -e "Using new software stack (gcc/6.3.0 python_gpu/3.8.5 eth_proxy)"
+            # JNB_MODULE_COMMAND="gcc/6.3.0 python_gpu/3.8.5 eth_proxy"
+            # echo -e "Using new software stack (gcc/6.3.0 python_gpu/3.8.5 eth_proxy)"
+            JNB_MODULE_COMMAND="gcc/9.3.0 eth_proxy"
+            echo -e "Using new software stack (gcc/9.3.0 eth_proxy)"
         else
             JNB_MODULE_COMMAND="gcc/6.3.0 python/3.8.5 eth_proxy"
             echo -e "Using new software stack (gcc/6.3.0 python/3.8.5 eth_proxy)"
