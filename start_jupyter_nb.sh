@@ -185,7 +185,7 @@ do
                 shift
                 shift
                 ;;
-                -G|--memgpu
+                -G|--memgpu)
                 JNB_MEM_GPU=$2
                 shift
                 shift
