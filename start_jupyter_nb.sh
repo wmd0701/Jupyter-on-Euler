@@ -90,7 +90,7 @@ JNB_SOFTWARE_STACK="new"
 JNB_WORKING_DIR=""
 
 # Virtual env default           : no default
-JNB_ENV="py3d"
+JNB_ENV=""
 
 # jupyter lab default           : empty string (will start a notebook instead of lab)
 JNB_JLAB="lab"
@@ -144,7 +144,7 @@ JNB_WAITING_INTERVAL=60     # Time interval to check if the job on the cluster a
 JNB_SSH_KEY_PATH=""         # Path to SSH key with non-standard name
 JNB_SOFTWARE_STACK="new"    # Software stack to be used (old, new)
 JNB_WORKING_DIR=""          # Working directory for jupyter notebook/lab
-JNB_ENV="py3d"              # Path to virtual environment
+JNB_ENV=""                  # Path to virtual environment
 JNB_JLAB="lab"              # "lab" -> start jupyter lab; "" -> start jupyter notebook
 
 EOF
