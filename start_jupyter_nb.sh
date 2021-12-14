@@ -428,7 +428,9 @@ ENDSSH
 # run the jupyter notebook/lab job on Euler and save ip, port and the token in the files jnbip and jninfo in the home directory of the user on Euler
 echo -e "Connecting to $JNB_HOSTNAME to start jupyter $JNB_START_OPTION in a batch job"
 # FIXME: save jobid in a variable, that the script can kill the batch job at the end
-#sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" -R "select[gpu_mtotal0>=$JNB_MEM_GPU]" $JNB_SNUM_GPU  <<ENDBSUB
+#sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" 
+# -R "select[gpu_mtotal0>=$JNB_MEM_GPU]" $JNB_SNUM_GPU  <<ENDBSUB
+
 sshpass -p Wmd=5213217421 ssh $JNB_SSH_OPT bsub -n $JNB_NUM_CPU -W $JNB_RUN_TIME -R "rusage[mem=$JNB_MEM_PER_CPU_CORE]" $JNB_SNUM_GPU  <<ENDBSUB
 module load $JNB_MODULE_COMMAND
 if [ "$JNB_ENV" != "" ]; then echo -e "Activating the $JNB_ENV"; source $JNB_ENV/bin/activate; fi
